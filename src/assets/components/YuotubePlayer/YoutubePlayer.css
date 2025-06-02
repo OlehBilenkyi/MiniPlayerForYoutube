@@ -1,0 +1,81 @@
+.yt-audio-player-container {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 12px;
+  border: 1px solid #9858586d;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+  background-color: #1c0202;
+}
+
+.yt-audio-player-container h2 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.yt-playlist {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 15px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.yt-playlist-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+.yt-playlist-item:hover {
+  background-color: #784d4d;
+}
+.yt-playlist-item.active {
+  background-color: #1a252e;
+  font-weight: bold;
+}
+
+.yt-controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.yt-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 4px;
+  transition: transform 0.1s ease-in-out;
+}
+.yt-btn:hover {
+  transform: scale(1.1);
+}
+
+.yt-progress-container {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.yt-progress-bar {
+  width: 100%;
+  cursor: pointer;
+}
+
+.yt-time-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.yt-volume-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+.yt-volume-container input[type="range"] {
+  flex-grow: 1;
+}
