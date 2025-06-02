@@ -2,13 +2,15 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { YouTubeEvent, YouTubePlayer } from "react-youtube";
 
 interface UseYouTubePlayerOptions {
-  initialVolume?: number; // 0–100
-  initialProgress?: number; // в секундах
-  autoPlayInitial?: boolean; // сразу играть ли при готовности
+  initialVolume?: number;
+  initialProgress?: number;
+  autoPlayInitial?: boolean;
+  onTrackEnd?: () => void;
 }
 
 interface UseYouTubePlayerResult {
   playerRef: React.MutableRefObject<YouTubePlayer | null>;
+  playerElement: HTMLMediaElement | null;
   isPlaying: boolean;
   progress: number;
   duration: number;
@@ -21,12 +23,6 @@ interface UseYouTubePlayerResult {
   onStateChange: (event: YouTubeEvent) => void;
 }
 
-/**
- * useYouTubePlayer инкапсулирует:
- * - инициализацию YouTubePlayer (реф);
- * - play / pause / seek / volume;
- * - слежение за progress, duration, ended.
- */
 export function useYouTubePlayer(
   options: UseYouTubePlayerOptions = {}
 ): UseYouTubePlayerResult {
@@ -34,119 +30,97 @@ export function useYouTubePlayer(
     initialVolume = 100,
     initialProgress = 0,
     autoPlayInitial = false,
+    onTrackEnd,
   } = options;
 
   const playerRef = useRef<YouTubePlayer | null>(null);
+  const playerElementRef = useRef<HTMLMediaElement | null>(null);
+  const progressRef = useRef(initialProgress);
+  const [isPlaying, setIsPlaying] = useState(autoPlayInitial);
+  const [duration, setDuration] = useState(0);
+  const [volume, setVolumeState] = useState(initialVolume);
 
-  const [isPlaying, setIsPlaying] = useState<boolean>(autoPlayInitial);
-  const [progress, setProgress] = useState<number>(initialProgress);
-  const [duration, setDuration] = useState<number>(0);
-  const [volume, setVolumeState] = useState<number>(initialVolume);
-
-  // Таймер для обновления progress
+  // Обновление прогресса
   useEffect(() => {
-    let intervalId: number | null = null;
-    if (playerRef.current && isPlaying) {
-      intervalId = window.setInterval(() => {
-        const curr = playerRef.current!.getCurrentTime();
-        setProgress(curr);
-      }, 500);
-    }
-    return () => {
-      if (intervalId !== null) {
-        clearInterval(intervalId);
+    if (!isPlaying) return;
+
+    const updateProgress = () => {
+      if (playerRef.current) {
+        const currentTime = playerRef.current.getCurrentTime();
+        progressRef.current = currentTime;
+        requestAnimationFrame(updateProgress);
       }
     };
+
+    const frameId = requestAnimationFrame(updateProgress);
+    return () => cancelAnimationFrame(frameId);
   }, [isPlaying]);
 
-  // play / pause / seek / setVolume
+  // Методы управления плеером
   const play = useCallback(() => {
-    if (playerRef.current) {
-      playerRef.current.playVideo();
-      setIsPlaying(true);
-    }
+    playerRef.current?.playVideo();
+    setIsPlaying(true);
   }, []);
 
   const pause = useCallback(() => {
-    if (playerRef.current) {
-      playerRef.current.pauseVideo();
-      setIsPlaying(false);
-    }
+    playerRef.current?.pauseVideo();
+    setIsPlaying(false);
   }, []);
 
   const seekTo = useCallback((seconds: number) => {
     if (playerRef.current) {
       playerRef.current.seekTo(seconds, true);
-      setProgress(seconds);
+      progressRef.current = seconds;
     }
   }, []);
 
   const setVolume = useCallback((vol: number) => {
     const newVol = Math.max(0, Math.min(100, vol));
     setVolumeState(newVol);
-    if (playerRef.current) {
-      playerRef.current.setVolume(newVol);
-    }
+    playerRef.current?.setVolume(newVol);
   }, []);
 
-  // Колбэк, когда YouTube-плеер готов
-  const onReady = useCallback(
-    (event: YouTubeEvent) => {
-      playerRef.current = event.target as YouTubePlayer;
-      // Устанавливаем громкость
-      playerRef.current.setVolume(volume);
+  // Обработчики событий YouTube
+  const onReady = useCallback((event: YouTubeEvent) => {
+    playerRef.current = event.target;
+    playerElementRef.current = playerRef.current.getMediaElement();
+    
+    setVolume(initialVolume);
+    if (initialProgress > 0) seekTo(initialProgress);
+    
+    const updateDuration = () => {
+      const dur = playerRef.current?.getDuration() || 0;
+      if (dur > 0) setDuration(dur);
+    };
+    
+    if (autoPlayInitial) play();
+    setTimeout(updateDuration, 500);
+  }, [autoPlayInitial, initialProgress, initialVolume, play, seekTo, setVolume]);
 
-      // Если есть сохранённая позиция, перемещаемся
-      if (initialProgress > 0) {
-        playerRef.current.seekTo(initialProgress, true);
-      }
-
-      // Автозапуск, если нужно
-      if (autoPlayInitial) {
-        playerRef.current.playVideo();
-        setIsPlaying(true);
-      }
-
-      // Через небольшую задержку получаем длительность
-      setTimeout(() => {
-        const dur = playerRef.current?.getDuration() ?? 0;
-        if (!isNaN(dur) && dur > 0) {
-          setDuration(dur);
-        }
-      }, 500);
-    },
-    [autoPlayInitial, initialProgress, volume]
-  );
-
-  // Колбэк, когда меняется состояние плеера (ENDED, BUFFERING и т. д.)
   const onStateChange = useCallback((event: YouTubeEvent) => {
-    const state = event.data;
-    // 0 → ENDED
-    if (state === 0) {
-      setIsPlaying(false);
-      // компонент-родитель может подписаться на onStateChange и вызвать playNext()
+    switch (event.data) {
+      case 0: // ENDED
+        setIsPlaying(false);
+        onTrackEnd?.();
+        break;
+      case 1: // PLAYING
+        setIsPlaying(true);
+        setDuration(prev => {
+          const dur = playerRef.current?.getDuration() || 0;
+          return dur > 0 ? dur : prev;
+        });
+        break;
+      case 2: // PAUSED
+        setIsPlaying(false);
+        break;
     }
-    // 1 → PLAYING
-    if (state === 1) {
-      setIsPlaying(true);
-    }
-    // 2 → PAUSED
-    if (state === 2) {
-      setIsPlaying(false);
-    }
-    // как только ролик начинает воспроизводиться, можно сразу обновить duration
-    if (state === 1) {
-      const dur = playerRef.current?.getDuration() ?? 0;
-      if (!isNaN(dur) && dur > 0) {
-        setDuration(dur);
-      }
-    }
-  }, []);
+  }, [onTrackEnd]);
 
   return {
     playerRef,
+    playerElement: playerElementRef.current,
     isPlaying,
-    progress,
+    progress: progressRef.current,
     duration,
     volume,
     play,
