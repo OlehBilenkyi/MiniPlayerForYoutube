@@ -1,24 +1,61 @@
 import React, { useState, useEffect, useCallback } from "react";
 import YouTube from "react-youtube";
-import Playlist, { PlaylistItem } from "./Playlist";
-import Controls, { RepeatMode } from "./Controls";
-import ProgressBar from "./ProgressBar";
-import VolumeControl from "./VolumeControl";
-import ThemeToggle from "./ThemeToggle";
+import Playlist, { PlaylistItem } from "../Playlist/Playlist";
+import Controls, { RepeatMode } from "../Controls/Controls";
+import ProgressBar from "../ProgressBar/ProgressBar";
+import VolumeControl from "../VolumeControl/VolumeControl";
+import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import { useYouTubePlayer } from "../../hooks/useYouTubePlayer";
-import "./YouTubeAudioPlayer.css";
+import "./YoutubePlayer.scss"; // Corrected import path for the SCSS file
 
 const STORAGE_KEY = "ytPlayerState";
 
 const YouTubeAudioPlayer: React.FC = () => {
-  // 1. Плейлист
+  // Обновленный плейлист
   const playlist: PlaylistItem[] = [
-    { videoId: "dQw4w9WgXcQ", title: "Rick Astley – Never Gonna Give You Up" },
-    { videoId: "3tmd-ClpJxA", title: "Eminem – Lose Yourself" },
-    { videoId: "JGwWNGJdvx8", title: "Ed Sheeran – Shape of You" },
+    {
+      videoId: "7pdN18RfGQw",
+      title: "Ollane feat. Miyagi - Touch The Sky (Official Audio)",
+    },
+    {
+      videoId: "4Ua1g8hU81A",
+      title: "Miyagi - Captain (2018)",
+    },
+    {
+      videoId: "jJpKYZs6Av0",
+      title: "Miyagi - Самурай (Official Audio)",
+    },
+    {
+      videoId: "vN12KY7eR8U",
+      title: "Miyagi & Andy Panda - YAMAKASI (Official Video)",
+    },
+    {
+      videoId: "xZEVGJszvo0",
+      title: "Miyagi & Andy Panda - Freeman (Official Video)",
+    },
+    {
+      videoId: "xZEVGJszvo0",
+      title: "Miyagi & Эндшпиль - Bounty (Official Audio)",
+    },
+    {
+      videoId: "DTz5k-8AzJo",
+      title: "Miyagi feat. Mav-d, Ollane - Music is Love (Official Audio)",
+    },
+    {
+      videoId: "iK7qs-1wTK8",
+      title: "Mr Lambo - Mango (Official Video)",
+    },
+    {
+      videoId: "af_Fnq39WQk",
+      title: "Miyagi & Эндшпиль - RudeBoys (Official Audio)",
+    },
+    {
+      videoId: "nidQCt_HEsY",
+      title: "Miyagi & Эндшпиль feat. Рем Дигга - I Got Love (Official Video)",
+    },
   ];
 
-  // Загрузить state из localStorage
+  // Загрузить состояние из localStorage
   const saved = (() => {
     try {
       return JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
@@ -27,7 +64,7 @@ const YouTubeAudioPlayer: React.FC = () => {
     }
   })();
 
-  // Локальные состояния (часть nằm в хуке)
+  // Локальные состояния
   const [currentIndex, setCurrentIndex] = useState<number>(
     saved?.currentIndex ?? 0
   );

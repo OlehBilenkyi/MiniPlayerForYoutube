@@ -1,14 +1,14 @@
 :root {
   --bg-color: #fafafa;
   --text-color: #333333;
-  --accent-color: #1e90ff;
+  --accent-color-rgb: 30, 144, 255; /* rgb(30,144,255) соответствует #1e90ff */
   --control-bg: #ffffff;
 }
 
 .dark {
   --bg-color: #1e1e1e;
   --text-color: #eeeeee;
-  --accent-color: #4aa3ff;
+  --accent-color-rgb: 74, 163, 255; /* rgb(74,163,255) соответствует #4aa3ff */
   --control-bg: #2a2a2a;
 }
 
@@ -40,11 +40,3 @@ button {
 }
 
 /* Дополнительно: определим CSS-переменные в формате RGB для более лёгкой прозрачности */
-
-:root {
-  --accent-color-rgb: 30, 144, 255; /* rgb(30,144,255) соответствует #1e90ff */
-}
-
-.dark {
-  --accent-color-rgb: 74, 163, 255; /* rgb(74,163,255) соответствует #4aa3ff */
-}
