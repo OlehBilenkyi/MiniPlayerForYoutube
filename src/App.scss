@@ -1,42 +1,50 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+:root {
+  --bg-color: #fafafa;
+  --text-color: #333333;
+  --accent-color: #1e90ff;
+  --control-bg: #ffffff;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.dark {
+  --bg-color: #1e1e1e;
+  --text-color: #eeeeee;
+  --accent-color: #4aa3ff;
+  --control-bg: #2a2a2a;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: Arial, sans-serif;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+h2 {
+  margin: 0;
+  padding: 0;
 }
 
-.card {
-  padding: 2em;
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.read-the-docs {
-  color: #888;
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: inherit;
+}
+
+/* Дополнительно: определим CSS-переменные в формате RGB для более лёгкой прозрачности */
+
+:root {
+  --accent-color-rgb: 30, 144, 255; /* rgb(30,144,255) соответствует #1e90ff */
+}
+
+.dark {
+  --accent-color-rgb: 74, 163, 255; /* rgb(74,163,255) соответствует #4aa3ff */
 }

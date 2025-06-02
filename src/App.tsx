@@ -1,12 +1,12 @@
 import React from "react";
-import YouTubeAudioPlayer from "./assets/components/YouTubeAudioPlayer/YoutubePlayer";
+import YouTubeAudioPlayer from "./components/YouTubePlayer/YouTubeAudioPlayer";
 
-function App() {
+const App: React.FC = () => {
   return (
     <div>
       <YouTubeAudioPlayer />
     </div>
   );
-}
+};
 
 export default App;
