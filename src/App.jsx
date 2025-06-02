@@ -1,5 +1,5 @@
 import React from "react";
-import YouTubeAudioPlayer from "./assets/components/YuotubePlayer/YoutubePlayer";
+import YouTubeAudioPlayer from "./assets/components/YouTubeAudioPlayer/YoutubePlayer";
 
 function App() {
   return (
