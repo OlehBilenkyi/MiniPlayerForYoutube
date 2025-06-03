@@ -11,51 +11,14 @@ import "./YoutubePlayer.scss"; // Corrected import path for the SCSS file
 const STORAGE_KEY = "ytPlayerState";
 
 const YouTubeAudioPlayer: React.FC = () => {
-  // Обновленный плейлист
+  // Playlist
   const playlist: PlaylistItem[] = [
-    {
-      videoId: "7pdN18RfGQw",
-      title: "Ollane feat. Miyagi - Touch The Sky (Official Audio)",
-    },
-    {
-      videoId: "4Ua1g8hU81A",
-      title: "Miyagi - Captain (2018)",
-    },
-    {
-      videoId: "jJpKYZs6Av0",
-      title: "Miyagi - Самурай (Official Audio)",
-    },
-    {
-      videoId: "vN12KY7eR8U",
-      title: "Miyagi & Andy Panda - YAMAKASI (Official Video)",
-    },
-    {
-      videoId: "xZEVGJszvo0",
-      title: "Miyagi & Andy Panda - Freeman (Official Video)",
-    },
-    {
-      videoId: "xZEVGJszvo0",
-      title: "Miyagi & Эндшпиль - Bounty (Official Audio)",
-    },
-    {
-      videoId: "DTz5k-8AzJo",
-      title: "Miyagi feat. Mav-d, Ollane - Music is Love (Official Audio)",
-    },
-    {
-      videoId: "iK7qs-1wTK8",
-      title: "Mr Lambo - Mango (Official Video)",
-    },
-    {
-      videoId: "af_Fnq39WQk",
-      title: "Miyagi & Эндшпиль - RudeBoys (Official Audio)",
-    },
-    {
-      videoId: "nidQCt_HEsY",
-      title: "Miyagi & Эндшпиль feat. Рем Дигга - I Got Love (Official Video)",
-    },
+    { videoId: "dQw4w9WgXcQ", title: "Rick Astley – Never Gonna Give You Up" },
+    { videoId: "3tmd-ClpJxA", title: "Eminem – Lose Yourself" },
+    { videoId: "JGwWNGJdvx8", title: "Ed Sheeran – Shape of You" },
   ];
 
-  // Загрузить состояние из localStorage
+  // Load state from localStorage
   const saved = (() => {
     try {
       return JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
@@ -64,7 +27,7 @@ const YouTubeAudioPlayer: React.FC = () => {
     }
   })();
 
-  // Локальные состояния
+  // Local states
   const [currentIndex, setCurrentIndex] = useState<number>(
     saved?.currentIndex ?? 0
   );
@@ -76,11 +39,11 @@ const YouTubeAudioPlayer: React.FC = () => {
   );
   const [isDark, setIsDark] = useState<boolean>(saved?.isDark ?? false);
 
-  // Из сохранённого вытащим начальные volume / progress
+  // Initial volume and progress from saved state
   const initialProgress = saved?.progress ?? 0;
   const initialVolume = saved?.volume ?? 100;
 
-  // Хук для работы с YouTube-плеером
+  // Hook for YouTube player
   const {
     playerRef,
     isPlaying,
@@ -99,7 +62,7 @@ const YouTubeAudioPlayer: React.FC = () => {
     autoPlayInitial: false,
   });
 
-  // Сохранение в localStorage
+  // Save to localStorage
   useEffect(() => {
     const toSave = {
       currentIndex,
@@ -159,7 +122,7 @@ const YouTubeAudioPlayer: React.FC = () => {
     return () => window.removeEventListener("keydown", onKey);
   }, [isPlaying, volume, duration]);
 
-  // Для переключения треков
+  // Track switching logic
   const getNext = useCallback((): number | null => {
     if (isShuffle) return Math.floor(Math.random() * playlist.length);
     const nxt = currentIndex + 1;
@@ -196,7 +159,7 @@ const YouTubeAudioPlayer: React.FC = () => {
     changeTrack(prev >= 0 ? prev : null, true);
   }, [currentIndex, isShuffle, repeatMode, playlist.length, changeTrack]);
 
-  // Когда YouTube изменяет состояние (ENDED, PLAYING и т. д.)
+  // Handle YouTube state changes
   const handleState = useCallback(
     (e: any) => {
       onStateChange(e);
@@ -205,7 +168,7 @@ const YouTubeAudioPlayer: React.FC = () => {
     [onStateChange, nextTrack]
   );
 
-  // Опции для YouTube IFrame
+  // YouTube IFrame options
   const opts = {
     height: "0",
     width: "0",
