@@ -224,18 +224,24 @@ const YouTubeAudioPlayer: React.FC = () => {
       />
 
       {/* 2) PlayerSection */}
-      <PlayerSection
-        playerRef={playerRef}
-        url={`https://www.youtube.com/watch?v=${playlist[currentIndex].videoId}`}
-        isPlaying={isPlaying}
-        onReady={onReady}
-        onProgress={handleProgress}
-        onEnded={() => {
-          onPlayerEnded();
-          handleEnded();
-        }}
-        volume={volume}
-      />
+      {playlist.length > 0 &&
+      currentIndex >= 0 &&
+      currentIndex < playlist.length ? (
+        <PlayerSection
+          playerRef={playerRef}
+          url={`https://www.youtube.com/watch?v=${playlist[currentIndex].videoId}`}
+          isPlaying={isPlaying}
+          onReady={onReady}
+          onProgress={handleProgress}
+          onEnded={() => {
+            onPlayerEnded();
+            handleEnded();
+          }}
+          volume={volume}
+        />
+      ) : (
+        <div>No valid track selected</div>
+      )}
 
       {/* 3) ControlsSection */}
       <ControlsSection

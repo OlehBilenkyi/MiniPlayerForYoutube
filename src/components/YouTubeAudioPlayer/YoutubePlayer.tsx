@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import YouTube from "react-youtube";
 import Playlist, { PlaylistItem } from "../Playlist/Playlist";
 import Controls, { RepeatMode } from "../Controls/Controls";
@@ -6,44 +6,72 @@ import ProgressBar from "../ProgressBar/ProgressBar";
 import VolumeControl from "../VolumeControl/VolumeControl";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import { useYouTubePlayer } from "../../hooks/useYouTubePlayer";
-import "./YoutubePlayer.scss"; // Corrected import path for the SCSS file
+import "./YoutubePlayer.scss";
 
 const STORAGE_KEY = "ytPlayerState";
 
+const DEFAULT_PLAYLIST: PlaylistItem[] = [
+  { videoId: "dQw4w9WgXcQ", title: "Rick Astley – Never Gonna Give You Up" },
+  { videoId: "3tmd-ClpJxA", title: "Eminem – Lose Yourself" },
+  { videoId: "JGwWNGJdvx8", title: "Ed Sheeran – Shape of You" },
+];
+
+interface PlayerState {
+  currentIndex: number;
+  progress: number;
+  volume: number;
+  repeatMode: RepeatMode;
+  isShuffle: boolean;
+  isDark: boolean;
+}
+
+const DEFAULT_STATE: PlayerState = {
+  currentIndex: 0,
+  progress: 0,
+  volume: 50,
+  repeatMode: "none",
+  isShuffle: false,
+  isDark: false,
+};
+
 const YouTubeAudioPlayer: React.FC = () => {
-  // Playlist
-  const playlist: PlaylistItem[] = [
-    { videoId: "dQw4w9WgXcQ", title: "Rick Astley – Never Gonna Give You Up" },
-    { videoId: "3tmd-ClpJxA", title: "Eminem – Lose Yourself" },
-    { videoId: "JGwWNGJdvx8", title: "Ed Sheeran – Shape of You" },
-  ];
-
-  // Load state from localStorage
-  const saved = (() => {
+  // Load and validate state from localStorage
+  const [playerState, setPlayerState] = useState<PlayerState>(() => {
     try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) return DEFAULT_STATE;
+
+      const parsed = JSON.parse(saved) as Partial<PlayerState>;
+
+      return {
+        ...DEFAULT_STATE,
+        ...parsed,
+        currentIndex: isValidIndex(parsed.currentIndex)
+          ? parsed.currentIndex!
+          : DEFAULT_STATE.currentIndex,
+      };
     } catch {
-      return null;
+      return DEFAULT_STATE;
     }
-  })();
+  });
 
-  // Local states
-  const [currentIndex, setCurrentIndex] = useState<number>(
-    saved?.currentIndex ?? 0
-  );
-  const [repeatMode, setRepeatMode] = useState<RepeatMode>(
-    saved?.repeatMode ?? "none"
-  );
-  const [isShuffle, setIsShuffle] = useState<boolean>(
-    saved?.isShuffle ?? false
-  );
-  const [isDark, setIsDark] = useState<boolean>(saved?.isDark ?? false);
+  const {
+    currentIndex,
+    progress: savedProgress,
+    volume: savedVolume,
+    repeatMode,
+    isShuffle,
+    isDark,
+  } = playerState;
 
-  // Initial volume and progress from saved state
-  const initialProgress = saved?.progress ?? 0;
-  const initialVolume = saved?.volume ?? 100;
+  const [playlist] = useState<PlaylistItem[]>(DEFAULT_PLAYLIST);
 
-  // Hook for YouTube player
+  // Validate current index
+  const safeCurrentIndex = useMemo(() => {
+    return isValidIndex(currentIndex) ? currentIndex : 0;
+  }, [currentIndex]);
+
+  // YouTube player hook
   const {
     playerRef,
     isPlaying,
@@ -53,40 +81,97 @@ const YouTubeAudioPlayer: React.FC = () => {
     play,
     pause,
     seekTo,
-    setVolume: setVol,
+    setVolume,
     onReady,
     onStateChange,
   } = useYouTubePlayer({
-    initialVolume,
-    initialProgress,
+    initialVolume: savedVolume,
+    initialProgress: savedProgress,
     autoPlayInitial: false,
   });
 
-  // Save to localStorage
+  // Save state to localStorage
   useEffect(() => {
-    const toSave = {
-      currentIndex,
+    const stateToSave: PlayerState = {
+      currentIndex: safeCurrentIndex,
       progress,
       volume,
       repeatMode,
       isShuffle,
       isDark,
     };
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
-    } catch {}
-  }, [currentIndex, progress, volume, repeatMode, isShuffle, isDark]);
 
-  // Dark mode
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
+    } catch (e) {
+      console.error("Failed to save player state", e);
+    }
+  }, [safeCurrentIndex, progress, volume, repeatMode, isShuffle, isDark]);
+
+  // Apply dark mode
   useEffect(() => {
     document.body.classList.toggle("dark", isDark);
   }, [isDark]);
 
-  // Keyboard Shortcuts
+  // Helper function to validate index
+  const isValidIndex = (index?: number): boolean => {
+    return index !== undefined && index >= 0 && index < playlist.length;
+  };
+
+  // Track navigation logic
+  const getNextIndex = useCallback((): number | null => {
+    if (isShuffle) return Math.floor(Math.random() * playlist.length);
+    const nextIndex = safeCurrentIndex + 1;
+    if (nextIndex >= playlist.length) return repeatMode === "all" ? 0 : null;
+    return nextIndex;
+  }, [safeCurrentIndex, isShuffle, repeatMode, playlist.length]);
+
+  const changeTrack = useCallback(
+    (index: number | null, autoPlay = true) => {
+      if (index === null || !isValidIndex(index)) return;
+
+      playerRef.current?.stopVideo();
+      setPlayerState((prev) => ({ ...prev, currentIndex: index }));
+      seekTo(0);
+      if (autoPlay) setTimeout(play, 200);
+    },
+    [play, seekTo, playlist.length]
+  );
+
+  const nextTrack = useCallback(() => {
+    if (repeatMode === "one") {
+      seekTo(0);
+      play();
+      return;
+    }
+    changeTrack(getNextIndex(), true);
+  }, [changeTrack, getNextIndex, play, repeatMode, seekTo]);
+
+  const prevTrack = useCallback(() => {
+    if (isShuffle) {
+      changeTrack(Math.floor(Math.random() * playlist.length), true);
+      return;
+    }
+    let prevIndex = safeCurrentIndex - 1;
+    if (prevIndex < 0)
+      prevIndex = repeatMode === "all" ? playlist.length - 1 : -1;
+    changeTrack(prevIndex >= 0 ? prevIndex : null, true);
+  }, [safeCurrentIndex, isShuffle, repeatMode, playlist.length, changeTrack]);
+
+  // Handle YouTube player state changes
+  const handleStateChange = useCallback(
+    (e: any) => {
+      onStateChange(e);
+      if (e.data === 0) nextTrack();
+    },
+    [onStateChange, nextTrack]
+  );
+
+  // Keyboard shortcuts
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const tag = (document.activeElement?.tagName || "").toLowerCase();
-      if (tag === "input" || tag === "textarea") return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const activeTag = (document.activeElement?.tagName || "").toLowerCase();
+      if (activeTag === "input" || activeTag === "textarea") return;
 
       switch (e.code) {
         case "Space":
@@ -102,13 +187,13 @@ const YouTubeAudioPlayer: React.FC = () => {
           seekTo(Math.max((playerRef.current?.getCurrentTime() || 0) - 5, 0));
           break;
         case "ArrowUp":
-          setVol(Math.min(volume + 10, 100));
+          setVolume(Math.min(volume + 10, 100));
           break;
         case "ArrowDown":
-          setVol(Math.max(volume - 10, 0));
+          setVolume(Math.max(volume - 10, 0));
           break;
         case "KeyM":
-          setVol(volume > 0 ? 0 : 50);
+          setVolume(volume > 0 ? 0 : 50);
           break;
         case "KeyN":
           nextTrack();
@@ -116,93 +201,75 @@ const YouTubeAudioPlayer: React.FC = () => {
         case "KeyP":
           prevTrack();
           break;
+        default:
+          break;
       }
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [isPlaying, volume, duration]);
 
-  // Track switching logic
-  const getNext = useCallback((): number | null => {
-    if (isShuffle) return Math.floor(Math.random() * playlist.length);
-    const nxt = currentIndex + 1;
-    if (nxt >= playlist.length) return repeatMode === "all" ? 0 : null;
-    return nxt;
-  }, [currentIndex, isShuffle, repeatMode]);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [
+    isPlaying,
+    volume,
+    duration,
+    nextTrack,
+    prevTrack,
+    play,
+    pause,
+    seekTo,
+    setVolume,
+  ]);
 
-  const changeTrack = useCallback(
-    (idx: number | null, auto = true) => {
-      if (idx === null) return;
-      playerRef.current?.stopVideo();
-      setCurrentIndex(idx);
-      seekTo(0);
-      if (auto) setTimeout(play, 200);
-    },
-    [play, seekTo]
+  // Player options
+  const playerOpts = useMemo(
+    () => ({
+      height: "0",
+      width: "0",
+      playerVars: {
+        autoplay: 0,
+        controls: 0,
+        modestbranding: 1,
+        rel: 0,
+        iv_load_policy: 3,
+      },
+    }),
+    []
   );
 
-  const nextTrack = useCallback(() => {
-    if (repeatMode === "one") {
-      play();
-      return;
-    }
-    changeTrack(getNext(), true);
-  }, [changeTrack, getNext, play, repeatMode]);
-
-  const prevTrack = useCallback(() => {
-    if (isShuffle) {
-      changeTrack(Math.floor(Math.random() * playlist.length), true);
-      return;
-    }
-    let prev = currentIndex - 1;
-    if (prev < 0) prev = repeatMode === "all" ? playlist.length - 1 : -1;
-    changeTrack(prev >= 0 ? prev : null, true);
-  }, [currentIndex, isShuffle, repeatMode, playlist.length, changeTrack]);
-
-  // Handle YouTube state changes
-  const handleState = useCallback(
-    (e: any) => {
-      onStateChange(e);
-      if (e.data === 0) nextTrack();
-    },
-    [onStateChange, nextTrack]
-  );
-
-  // YouTube IFrame options
-  const opts = {
-    height: "0",
-    width: "0",
-    playerVars: {
-      autoplay: 0,
-      controls: 0,
-      modestbranding: 1,
-      rel: 0,
-      iv_load_policy: 3,
-    },
-  };
+  // Current track (with fallback)
+  const currentTrack = useMemo(() => {
+    return (
+      playlist[safeCurrentIndex] || playlist[0] || { videoId: "", title: "" }
+    );
+  }, [playlist, safeCurrentIndex]);
 
   return (
-    <div className="yt-audio-player-container">
+    <div className={`yt-audio-player-container ${isDark ? "dark" : ""}`}>
       <div className="header-row">
-        <h2>YouTube Мини-плеер</h2>
+        <h2>YouTube Audio Player</h2>
         <ThemeToggle
           isDarkMode={isDark}
-          onToggle={() => setIsDark((d) => !d)}
+          onToggle={() =>
+            setPlayerState((prev) => ({ ...prev, isDark: !prev.isDark }))
+          }
         />
       </div>
 
       <Playlist
         items={playlist}
-        currentIndex={currentIndex}
-        onSelect={(i) => changeTrack(i, true)}
+        currentIndex={safeCurrentIndex}
+        onSelect={(index) => changeTrack(index, true)}
       />
 
-      <YouTube
-        videoId={playlist[currentIndex].videoId}
-        opts={opts}
-        onReady={onReady}
-        onStateChange={handleState}
-      />
+      {currentTrack.videoId && (
+        <YouTube
+          key={currentTrack.videoId}
+          videoId={currentTrack.videoId}
+          opts={playerOpts}
+          onReady={onReady}
+          onStateChange={handleStateChange}
+        />
+      )}
 
       <Controls
         isPlaying={isPlaying}
@@ -210,18 +277,26 @@ const YouTubeAudioPlayer: React.FC = () => {
         onPrev={prevTrack}
         onNext={nextTrack}
         isShuffle={isShuffle}
-        onToggleShuffle={() => setIsShuffle((s) => !s)}
+        onToggleShuffle={() =>
+          setPlayerState((prev) => ({ ...prev, isShuffle: !prev.isShuffle }))
+        }
         repeatMode={repeatMode}
         onToggleRepeat={() =>
-          setRepeatMode((r) =>
-            r === "none" ? "all" : r === "all" ? "one" : "none"
-          )
+          setPlayerState((prev) => ({
+            ...prev,
+            repeatMode:
+              prev.repeatMode === "none"
+                ? "all"
+                : prev.repeatMode === "all"
+                ? "one"
+                : "none",
+          }))
         }
       />
 
       <ProgressBar progress={progress} duration={duration} onSeek={seekTo} />
 
-      <VolumeControl volume={volume} onVolumeChange={setVol} />
+      <VolumeControl volume={volume} onVolumeChange={setVolume} />
     </div>
   );
 };
