@@ -1,12 +1,16 @@
-/* src/components/YouTubeAudioPlayer/YouTubeAudioPlayer.scss */
 .yt-audio-player-container {
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  max-width: 400px;
+  max-width: 600px;
   margin: 20px auto;
-  padding: 12px;
-  border: 1px solid #ddd;
+  padding: 16px;
+  background: #fafafa;
   border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-family: sans-serif;
+}
+
+.yt-audio-player-container.dark {
+  background: #2b2b2b;
+  color: #f0f0f0;
 }
 
 .header-row {
@@ -14,9 +18,112 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+}
 
-  h2 {
-    font-size: 1.25rem;
-    margin: 0;
-  }
+.yt-playlist {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px 0;
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.yt-playlist-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.yt-playlist-item:hover {
+  background: #f0f0f0;
+}
+
+.yt-playlist-item.active {
+  background: #007bff;
+  color: #fff;
+}
+
+.player-wrapper {
+  display: none; /* ReactPlayer невидим */
+}
+
+.controls-tooltip {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.tooltip-text {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 4px;
+}
+
+.toggle-visualizer-btn {
+  margin-top: 12px;
+  padding: 6px 12px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.toggle-visualizer-btn:hover {
+  background: #0056b3;
+}
+
+.visualizer-wrapper {
+  margin-top: 8px;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.visualizer-wrapper.hidden {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.progress-with-time {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.progress-with-time .current-time,
+.progress-with-time .total-time {
+  width: 48px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.yt-progress-bar {
+  flex-grow: 1;
+  margin: 0 8px;
+  cursor: pointer;
+}
+
+.volume-with-label {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.volume-label {
+  margin-left: 8px;
+  font-size: 0.9rem;
+}
+
+/* Тёмная тема для плейлиста */
+.yt-audio-player-container.dark .yt-playlist {
+  border-color: #444;
+}
+
+.yt-audio-player-container.dark .yt-playlist-item:hover {
+  background: #444;
+}
+
+.yt-audio-player-container.dark .yt-playlist-item.active {
+  background: #0056b3;
 }

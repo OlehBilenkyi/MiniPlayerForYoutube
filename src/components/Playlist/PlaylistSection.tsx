@@ -1,17 +1,18 @@
 import React from "react";
+import "./PlaylistSection.scss";
 
 export interface PlaylistItem {
   videoId: string;
   title: string;
 }
 
-interface PlaylistProps {
+interface PlaylistSectionProps {
   items: PlaylistItem[];
   currentIndex: number;
   onSelect: (index: number) => void;
 }
 
-const Playlist: React.FC<PlaylistProps> = ({
+const PlaylistSection: React.FC<PlaylistSectionProps> = ({
   items,
   currentIndex,
   onSelect,
@@ -35,4 +36,4 @@ const Playlist: React.FC<PlaylistProps> = ({
   );
 };
 
-export default Playlist;
+export default PlaylistSection;

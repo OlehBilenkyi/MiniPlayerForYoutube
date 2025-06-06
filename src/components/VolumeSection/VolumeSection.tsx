@@ -1,11 +1,12 @@
 import React from "react";
+import "./VolumeSection.scss";
 
-interface VolumeControlProps {
-  volume: number;
-  onVolumeChange: (newVolume: number) => void;
+interface VolumeSectionProps {
+  volume: number; // 0–100
+  onVolumeChange: (vol: number) => void;
 }
 
-const VolumeControl: React.FC<VolumeControlProps> = ({
+const VolumeSection: React.FC<VolumeSectionProps> = ({
   volume,
   onVolumeChange,
 }) => {
@@ -30,4 +31,4 @@ const VolumeControl: React.FC<VolumeControlProps> = ({
   );
 };
 
-export default VolumeControl;
+export default VolumeSection;

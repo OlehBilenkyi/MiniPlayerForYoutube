@@ -1,4 +1,4 @@
-// src/components/Visualizer/Visualizer.tsx
+
 import React, { useEffect, useRef } from "react";
 import "./Visualizer.scss";
 

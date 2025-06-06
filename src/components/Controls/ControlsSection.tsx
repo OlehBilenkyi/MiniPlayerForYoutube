@@ -1,4 +1,3 @@
-// src/components/YouTubeAudioPlayer/ControlsSection.tsx
 import React from "react";
 import "./ControlsSection.scss";
 
@@ -25,31 +24,39 @@ const ControlsSection: React.FC<ControlsSectionProps> = ({
   repeatMode,
   onToggleRepeat,
 }) => {
-  // Иконки «repeat» меняются в зависимости от режима
   const repeatIcon = {
-    none: "↻", // повторять запрещено
-    all: "🔁", // повторять весь плейлист
-    one: "🔂", // повторять только текущий трек
+    none: "↻",
+    all: "🔁",
+    one: "🔂",
   }[repeatMode];
 
   return (
     <div className="yt-controls">
-      <button onClick={onPrev} className="yt-btn">
+      <button onClick={onPrev} className="yt-btn" title="Предыдущий (P)">
         ⏮️
       </button>
-      <button onClick={onPlayPause} className="yt-btn">
+      <button
+        onClick={onPlayPause}
+        className="yt-btn"
+        title="Play/Pause (Space)"
+      >
         {isPlaying ? "⏸️" : "▶️"}
       </button>
-      <button onClick={onNext} className="yt-btn">
+      <button onClick={onNext} className="yt-btn" title="Следующий (N)">
         ⏭️
       </button>
       <button
         onClick={onToggleShuffle}
         className={`yt-btn ${isShuffle ? "active" : ""}`}
+        title="Перемешать треки"
       >
         🔀
       </button>
-      <button onClick={onToggleRepeat} className="yt-btn">
+      <button
+        onClick={onToggleRepeat}
+        className="yt-btn"
+        title="Повтор (None → All → One)"
+      >
         {repeatIcon}
       </button>
     </div>

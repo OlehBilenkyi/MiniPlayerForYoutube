@@ -1,4 +1,3 @@
-// src/components/YouTubeAudioPlayer/PlaylistSection.tsx
 import React from "react";
 import "./PlaylistSection.scss";
 

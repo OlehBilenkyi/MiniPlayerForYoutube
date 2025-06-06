@@ -10,7 +10,6 @@ interface UsePlayerHandlersParams {
   initialProgress: number;
   initialVolume: number;
   autoPlayInitial: boolean;
-  fetchVideoTitle?: () => void;
 }
 
 export function usePlayerHandlers({
@@ -29,31 +28,37 @@ export function usePlayerHandlers({
     const internal = player.getInternalPlayer();
 
     if (internal instanceof HTMLMediaElement) {
-      // Инициализируем анализатор, передав HTMLMediaElement
+      // Если это <audio> или <video> (например, в других реализациях)
       initAnalyser(internal);
 
-      // Устанавливаем громкость на самом элементе
       internal.volume = initialVolume / 100;
 
-      // Если было сохранённое время, перемещаем на него
       if (initialProgress > 0) {
         internal.currentTime = initialProgress;
       }
 
-      // Сразу обновляем длительность, если она известна
       const dur = internal.duration;
       if (!isNaN(dur) && dur > 0) {
         setDuration(dur);
       }
 
-      // Автозаплей, если нужно
       if (autoPlayInitial) {
         internal.play();
         setIsPlaying(true);
       }
     } else {
-      // Если это не HTMLMediaElement (например, YouTube-iframe), просто ставим флаг
+      // Ветка для YouTube-iframe (ReactPlayer)
       setIsPlaying(autoPlayInitial);
+
+      // Попробуем получить длительность через YouTube API
+      const dur =
+        typeof internal.getDuration === "function"
+          ? internal.getDuration()
+          : NaN;
+      if (!isNaN(dur) && dur > 0) {
+        setDuration(dur);
+      }
+      // (Не трогаем initAnalyser, так как это не HTMLMediaElement)
     }
   }, [
     autoPlayInitial,
