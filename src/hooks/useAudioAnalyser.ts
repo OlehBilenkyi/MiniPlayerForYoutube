@@ -1,4 +1,3 @@
-// src/hooks/useAudioAnalyser.ts
 import { useRef, useCallback } from "react";
 
 export function useAudioAnalyser() {

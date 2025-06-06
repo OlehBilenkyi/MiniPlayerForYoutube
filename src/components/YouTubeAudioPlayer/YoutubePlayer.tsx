@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import YouTube from "react-youtube";
-import Playlist, { PlaylistItem } from "../Playlist/Playlist";
-import Controls, { RepeatMode } from "../Controls/Controls";
-import ProgressBar from "../ProgressBar/ProgressBar";
-import VolumeControl from "../VolumeControl/VolumeControl";
+import PlaylistSection, { PlaylistItem } from "./PlaylistSection";
+import ControlsSection, { RepeatMode } from "./ControlsSection";
+import ProgressSection from "./ProgressSection";
+import VolumeSection from "./VolumeSection";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import { useYouTubePlayer } from "../../hooks/useYouTubePlayer";
 import "./YoutubePlayer.scss";
@@ -35,7 +35,6 @@ const DEFAULT_STATE: PlayerState = {
 };
 
 const YouTubeAudioPlayer: React.FC = () => {
-  // Load and validate state from localStorage
   const [playerState, setPlayerState] = useState<PlayerState>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -63,15 +62,12 @@ const YouTubeAudioPlayer: React.FC = () => {
     isShuffle,
     isDark,
   } = playerState;
-
   const [playlist] = useState<PlaylistItem[]>(DEFAULT_PLAYLIST);
 
-  // Validate current index
   const safeCurrentIndex = useMemo(() => {
     return isValidIndex(currentIndex) ? currentIndex : 0;
   }, [currentIndex]);
 
-  // YouTube player hook
   const {
     playerRef,
     isPlaying,
@@ -90,7 +86,6 @@ const YouTubeAudioPlayer: React.FC = () => {
     autoPlayInitial: false,
   });
 
-  // Save state to localStorage
   useEffect(() => {
     const stateToSave: PlayerState = {
       currentIndex: safeCurrentIndex,
@@ -108,17 +103,14 @@ const YouTubeAudioPlayer: React.FC = () => {
     }
   }, [safeCurrentIndex, progress, volume, repeatMode, isShuffle, isDark]);
 
-  // Apply dark mode
   useEffect(() => {
     document.body.classList.toggle("dark", isDark);
   }, [isDark]);
 
-  // Helper function to validate index
   const isValidIndex = (index?: number): boolean => {
     return index !== undefined && index >= 0 && index < playlist.length;
   };
 
-  // Track navigation logic
   const getNextIndex = useCallback((): number | null => {
     if (isShuffle) return Math.floor(Math.random() * playlist.length);
     const nextIndex = safeCurrentIndex + 1;
@@ -158,7 +150,6 @@ const YouTubeAudioPlayer: React.FC = () => {
     changeTrack(prevIndex >= 0 ? prevIndex : null, true);
   }, [safeCurrentIndex, isShuffle, repeatMode, playlist.length, changeTrack]);
 
-  // Handle YouTube player state changes
   const handleStateChange = useCallback(
     (e: any) => {
       onStateChange(e);
@@ -167,7 +158,6 @@ const YouTubeAudioPlayer: React.FC = () => {
     [onStateChange, nextTrack]
   );
 
-  // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const activeTag = (document.activeElement?.tagName || "").toLowerCase();
@@ -220,7 +210,6 @@ const YouTubeAudioPlayer: React.FC = () => {
     setVolume,
   ]);
 
-  // Player options
   const playerOpts = useMemo(
     () => ({
       height: "0",
@@ -236,7 +225,6 @@ const YouTubeAudioPlayer: React.FC = () => {
     []
   );
 
-  // Current track (with fallback)
   const currentTrack = useMemo(() => {
     return (
       playlist[safeCurrentIndex] || playlist[0] || { videoId: "", title: "" }
@@ -255,7 +243,7 @@ const YouTubeAudioPlayer: React.FC = () => {
         />
       </div>
 
-      <Playlist
+      <PlaylistSection
         items={playlist}
         currentIndex={safeCurrentIndex}
         onSelect={(index) => changeTrack(index, true)}
@@ -271,7 +259,7 @@ const YouTubeAudioPlayer: React.FC = () => {
         />
       )}
 
-      <Controls
+      <ControlsSection
         isPlaying={isPlaying}
         onPlayPause={() => (isPlaying ? pause() : play())}
         onPrev={prevTrack}
@@ -294,9 +282,13 @@ const YouTubeAudioPlayer: React.FC = () => {
         }
       />
 
-      <ProgressBar progress={progress} duration={duration} onSeek={seekTo} />
+      <ProgressSection
+        progress={progress}
+        duration={duration}
+        onSeek={seekTo}
+      />
 
-      <VolumeControl volume={volume} onVolumeChange={setVolume} />
+      <VolumeSection volume={volume} onVolumeChange={setVolume} />
     </div>
   );
 };

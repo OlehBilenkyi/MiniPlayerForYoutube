@@ -6,7 +6,7 @@ import "./PlayerSection.scss";
 interface PlayerSectionProps {
   playerRef: React.MutableRefObject<ReactPlayer | null>;
   url: string;
-  isPlaying: boolean; // <- именно этот флаг определяет воспроизведение
+  isPlaying: boolean;
   onReady: () => void;
   onProgress: (state: { playedSeconds: number }) => void;
   onEnded: () => void;

@@ -1,10 +1,10 @@
 import React from "react";
-import YouTubeAudioPlayer from "./components/YouTubeAudioPlayer/YouTubeAudioPlayer";
+import YouTubePlaylistPlayer from "./components/YouTubeAudioPlayer/YouTubePlaylistPlayer";
 
 const App: React.FC = () => {
   return (
     <div>
-      <YouTubeAudioPlayer />
+      <YouTubePlaylistPlayer />
     </div>
   );
 };

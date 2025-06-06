@@ -1,4 +1,3 @@
-// src/hooks/usePlayerState.ts
 import { useState, useCallback } from "react";
 
 export interface UsePlayerStateResult {

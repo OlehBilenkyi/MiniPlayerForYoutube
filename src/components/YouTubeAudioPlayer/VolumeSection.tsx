@@ -3,7 +3,7 @@ import React from "react";
 import "./VolumeSection.scss";
 
 interface VolumeSectionProps {
-  volume: number;
+  volume: number; // 0–100
   onVolumeChange: (vol: number) => void;
 }
 

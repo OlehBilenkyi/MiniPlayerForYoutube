@@ -1,4 +1,3 @@
-// src/hooks/usePlayerHandlers.ts
 import { useCallback } from "react";
 import ReactPlayer from "react-player";
 
@@ -11,6 +10,7 @@ interface UsePlayerHandlersParams {
   initialProgress: number;
   initialVolume: number;
   autoPlayInitial: boolean;
+  fetchVideoTitle?: () => void;
 }
 
 export function usePlayerHandlers({
@@ -29,30 +29,30 @@ export function usePlayerHandlers({
     const internal = player.getInternalPlayer();
 
     if (internal instanceof HTMLMediaElement) {
-      // Инициализируем анализатор
+      // Инициализируем анализатор, передав HTMLMediaElement
       initAnalyser(internal);
 
-      // Ставим громкость на HTMLMediaElement
+      // Устанавливаем громкость на самом элементе
       internal.volume = initialVolume / 100;
 
-      // Если есть сохранённая позиция
+      // Если было сохранённое время, перемещаем на него
       if (initialProgress > 0) {
         internal.currentTime = initialProgress;
       }
 
-      // Обновляем длительность
+      // Сразу обновляем длительность, если она известна
       const dur = internal.duration;
       if (!isNaN(dur) && dur > 0) {
         setDuration(dur);
       }
 
-      // Автоплей, если нужно
+      // Автозаплей, если нужно
       if (autoPlayInitial) {
         internal.play();
         setIsPlaying(true);
       }
     } else {
-      // Для YouTube-iframe просто переключаем флаг
+      // Если это не HTMLMediaElement (например, YouTube-iframe), просто ставим флаг
       setIsPlaying(autoPlayInitial);
     }
   }, [
