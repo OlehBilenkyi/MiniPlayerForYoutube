@@ -2,6 +2,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  width: 100%;
   padding: 1rem;
   background: rgba(15, 15, 15, 0.7);
   backdrop-filter: blur(12px);
@@ -9,7 +10,6 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.9);
-  width: fit-content;
 
   .volume-label {
     font-family: "Courier New", monospace;
@@ -33,16 +33,18 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+    flex: 1; /* Добавляем flex: 1, чтобы контейнер занимал оставшееся пространство */
 
     label {
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       color: rgba(255, 255, 255, 0.8);
       font-size: 1rem;
       font-weight: bold;
+      white-space: nowrap; /* Запрещаем перенос текста */
     }
 
     input[type="range"] {
-      flex: 1;
+      flex: 1; /* Добавляем flex: 1, чтобы ползунок занимал оставшееся пространство */
       height: 8px;
       -webkit-appearance: none;
       appearance: none;
@@ -54,6 +56,7 @@
       border-radius: 4px;
       outline: none;
       transition: height 0.3s ease, background 0.3s ease;
+      overflow: hidden; /* Скрываем все, что выходит за границы */
 
       &::-webkit-slider-thumb {
         -webkit-appearance: none;

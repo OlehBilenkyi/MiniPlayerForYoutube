@@ -1,6 +1,6 @@
 import React from "react";
 import Visualizer from "../Visualizer";
-import "./YouTubeAudioPlayer.scss";
+import "./VisualizerToggle.scss";
 
 interface VisualizerToggleProps {
   show: boolean;
