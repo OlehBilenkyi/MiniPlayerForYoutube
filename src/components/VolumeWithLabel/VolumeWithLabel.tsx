@@ -1,6 +1,6 @@
 import React from "react";
 import VolumeSection from "../VolumeSection/VolumeSection";
-import "./YouTubeAudioPlayer.scss";
+import "../YouTubeAudioPlayer/YouTubeAudioPlayer.scss";
 
 interface VolumeWithLabelProps {
   volume: number;

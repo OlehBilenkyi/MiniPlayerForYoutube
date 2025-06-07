@@ -1,0 +1,29 @@
+.hidden-player-wrapper {
+  position: relative;
+  transition: all 0.3s ease;
+  width: 640px;
+  height: 360px;
+  margin: 10px auto;
+
+  &.hidden {
+    visibility: hidden;
+    opacity: 0;
+    height: 0;
+    margin: 0;
+  }
+
+  .video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background: transparent;
+  }
+
+  & > div {
+    width: 100% !important;
+    height: 100% !important;
+  }
+}

@@ -1,16 +1,32 @@
 import React from "react";
-import ThemeToggle from "../ThemeToggle/ThemeToggle";
 
 interface HeaderProps {
+  title: string;
+  videoTitle: string;
   isDark: boolean;
   onToggleTheme: () => void;
+  extraControls?: React.ReactNode;
 }
 
-const Header: React.FC<HeaderProps> = ({ isDark, onToggleTheme }) => {
+const Header: React.FC<HeaderProps> = ({
+  title,
+  videoTitle,
+  isDark,
+  onToggleTheme,
+  extraControls, // Добавляем пропс в параметры
+}) => {
   return (
-    <div className="header-row">
-      <h2>YouTube Audio Player</h2>
-      <ThemeToggle isDarkMode={isDark} onToggle={onToggleTheme} />
+    <div className="header-container">
+      <div className="header-content">
+        <h1>{title}</h1>
+        <p>{videoTitle}</p>
+      </div>
+      <div className="header-controls">
+        <button onClick={onToggleTheme}>
+          {isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        </button>
+        {extraControls} {/* Добавляем отображение extraControls */}
+      </div>
     </div>
   );
 };

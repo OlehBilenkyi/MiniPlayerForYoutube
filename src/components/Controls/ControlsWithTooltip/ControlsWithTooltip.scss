@@ -1,0 +1,14 @@
+.controls-tooltip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  gap: 8px;
+
+  .tooltip-text {
+    font-size: 0.8rem;
+    color: var(--text-color-secondary);
+    text-align: center;
+    line-height: 1.2;
+  }
+}

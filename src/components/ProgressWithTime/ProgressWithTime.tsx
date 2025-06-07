@@ -1,6 +1,6 @@
 
 import React from "react";
-import "./YouTubeAudioPlayer.scss";
+import "../YouTubeAudioPlayer/YouTubeAudioPlayer.scss";
 
 interface ProgressWithTimeProps {
   progress: number;

@@ -1,5 +1,6 @@
+// src/components/PlayerSection/PlayerSection.tsx
 import React from "react";
-import "./PlaylistSection.scss";
+import "./PlayerSection.scss";
 
 export interface PlaylistItem {
   videoId: string;
@@ -7,16 +8,20 @@ export interface PlaylistItem {
 }
 
 interface PlaylistSectionProps {
-  items: PlaylistItem[];
+  items?: PlaylistItem[]; // Делаем необязательным
   currentIndex: number;
   onSelect: (index: number) => void;
 }
 
 const PlaylistSection: React.FC<PlaylistSectionProps> = ({
-  items,
+  items = [], // Значение по умолчанию
   currentIndex,
   onSelect,
 }) => {
+  if (items.length === 0) {
+    return <div className="empty-playlist">Плейлист пуст</div>;
+  }
+
   return (
     <ul className="yt-playlist">
       {items.map((item, idx) => (

@@ -1,6 +1,6 @@
-
-import React, { useEffect } from "react";
+import React from "react";
 import ReactPlayer from "react-player";
+import "./HiddenPlyer.scss";
 
 interface HiddenPlayerProps {
   playerRef: React.MutableRefObject<ReactPlayer | null>;
@@ -10,7 +10,8 @@ interface HiddenPlayerProps {
   onReady: (e: any) => void;
   onProgress: (state: { playedSeconds: number }) => void;
   onEnded: () => void;
-  initAnalyser: (media: unknown) => void;
+  initAnalyser: (media: HTMLMediaElement) => void;
+  showVideo?: boolean;
 }
 
 const HiddenPlayer: React.FC<HiddenPlayerProps> = ({
@@ -22,16 +23,25 @@ const HiddenPlayer: React.FC<HiddenPlayerProps> = ({
   onProgress,
   onEnded,
   initAnalyser,
+  showVideo = false,
 }) => {
+  const blockClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
   return (
-    <div className="player-wrapper">
+    <div
+      className={`hidden-player-wrapper ${showVideo ? "visible" : "hidden"}`}
+    >
+      {showVideo && <div className="video-overlay" onClick={blockClick} />}
       <ReactPlayer
         ref={playerRef}
         url={url}
         playing={isPlaying}
         controls={false}
-        width="0"
-        height="0"
+        width="100%"
+        height="100%"
         onReady={(event) => {
           onReady(event);
           const internal = playerRef.current?.getInternalPlayer();
@@ -51,7 +61,7 @@ const HiddenPlayer: React.FC<HiddenPlayerProps> = ({
               modestbranding: 1,
               iv_load_policy: 3,
               disablekb: 1,
-              fs: 0,
+              fs: 0, // Исправлено с 1 на 0 для отключения полноэкранного режима
               controls: 0,
             },
           },
@@ -62,4 +72,3 @@ const HiddenPlayer: React.FC<HiddenPlayerProps> = ({
 };
 
 export default HiddenPlayer;
-

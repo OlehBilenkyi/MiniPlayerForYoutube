@@ -1,6 +1,6 @@
 import React from "react";
 import ControlsSection, { RepeatMode } from "../ControlsSection";
-import "./YouTubeAudioPlayer.scss";
+import "../../YouTubeAudioPlayer/YouTubeAudioPlayer.scss";
 
 interface ControlsWithTooltipProps {
   isPlaying: boolean;
