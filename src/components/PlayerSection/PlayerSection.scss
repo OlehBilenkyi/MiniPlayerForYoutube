@@ -1,13 +1,60 @@
-/* src/components/YouTubeAudioPlayer/PlayerSection.scss */
-.player-section {
-  position: relative;
+.yt-playlist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   width: 100%;
-  margin-bottom: 15px;
+  max-height: 400px;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
 
-  canvas {
-    width: 100%;
-    height: 100px;
-    background-color: var(--control-bg);
-    border-radius: 4px;
+  &::-webkit-scrollbar {
+    width: 8px;
   }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.5);
+  }
+}
+
+.yt-playlist-item {
+  padding: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  color: #333;
+  font-size: 1rem;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.1);
+    transform: translateX(5px);
+  }
+
+  &.active {
+    background: rgba(49, 163, 84, 0.3);
+    color: #1db954;
+    font-weight: bold;
+    transform: translateX(5px);
+  }
+}
+
+.empty-playlist {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-style: italic;
 }

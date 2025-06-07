@@ -1,6 +1,6 @@
 import React from "react";
 import ReactPlayer from "react-player";
-import "./HiddenPlyer.scss";
+import "./HiddenPlayer.scss";
 
 interface HiddenPlayerProps {
   playerRef: React.MutableRefObject<ReactPlayer | null>;
@@ -34,7 +34,11 @@ const HiddenPlayer: React.FC<HiddenPlayerProps> = ({
     <div
       className={`hidden-player-wrapper ${showVideo ? "visible" : "hidden"}`}
     >
-      {showVideo && <div className="video-overlay" onClick={blockClick} />}
+      {showVideo && (
+        <div className="video-overlay" onClick={blockClick}>
+          Click to interact
+        </div>
+      )}
       <ReactPlayer
         ref={playerRef}
         url={url}
@@ -61,12 +65,13 @@ const HiddenPlayer: React.FC<HiddenPlayerProps> = ({
               modestbranding: 1,
               iv_load_policy: 3,
               disablekb: 1,
-              fs: 0, // Исправлено с 1 на 0 для отключения полноэкранного режима
+              fs: 0,
               controls: 0,
             },
           },
         }}
       />
+      {!showVideo && <div className="player-placeholder">Player is hidden</div>}
     </div>
   );
 };

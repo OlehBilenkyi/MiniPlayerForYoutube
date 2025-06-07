@@ -1,7 +1,6 @@
-
 import React from "react";
 import { PlaylistItem } from "../../data/mockPlaylist";
-import "./YouTubeAudioPlayer.scss"; // здесь находятся стили для списка
+import "./PlaylistList.scss"; // здесь находятся стили для списка
 
 interface PlaylistListProps {
   items: PlaylistItem[];

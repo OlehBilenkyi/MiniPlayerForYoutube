@@ -1,4 +1,5 @@
 import React from "react";
+import "./Header.scss";
 
 interface HeaderProps {
   title: string;
@@ -13,21 +14,27 @@ const Header: React.FC<HeaderProps> = ({
   videoTitle,
   isDark,
   onToggleTheme,
-  extraControls, // Добавляем пропс в параметры
+  extraControls,
 }) => {
   return (
-    <div className="header-container">
-      <div className="header-content">
-        <h1>{title}</h1>
-        <p>{videoTitle}</p>
-      </div>
-      <div className="header-controls">
-        <button onClick={onToggleTheme}>
-          {isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+    <header className="header">
+      <h1>{title}</h1>
+      <div className="extra-controls">
+        {extraControls}
+        <button className="theme-toggle" onClick={onToggleTheme}>
+          <svg viewBox="0 0 24 24" width="24" height="24">
+            <path
+              fill="currentColor"
+              d={
+                isDark
+                  ? "M12,18.5A6.5,6.5 0 0,1 5.5,12A6.5,6.5 0 0,1 12,5.5A6.5,6.5 0 0,1 18.5,12A6.5,6.5 0 0,1 12,18.5M12,3A9,9 0 0,0 3,12A9,9 0 0,0 12,21A9,9 0 0,0 21,12A9,9 0 0,0 12,3Z"
+                  : "M12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
+              }
+            />
+          </svg>
         </button>
-        {extraControls} {/* Добавляем отображение extraControls */}
       </div>
-    </div>
+    </header>
   );
 };
 

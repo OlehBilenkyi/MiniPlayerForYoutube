@@ -1,4 +1,3 @@
-// src/components/PlayerSection/PlayerSection.tsx
 import React from "react";
 import "./PlayerSection.scss";
 
@@ -8,13 +7,13 @@ export interface PlaylistItem {
 }
 
 interface PlaylistSectionProps {
-  items?: PlaylistItem[]; // Делаем необязательным
+  items?: PlaylistItem[];
   currentIndex: number;
   onSelect: (index: number) => void;
 }
 
 const PlaylistSection: React.FC<PlaylistSectionProps> = ({
-  items = [], // Значение по умолчанию
+  items = [],
   currentIndex,
   onSelect,
 }) => {
@@ -27,11 +26,7 @@ const PlaylistSection: React.FC<PlaylistSectionProps> = ({
       {items.map((item, idx) => (
         <li
           key={item.videoId}
-          className={
-            idx === currentIndex
-              ? "yt-playlist-item active"
-              : "yt-playlist-item"
-          }
+          className={`yt-playlist-item ${idx === currentIndex ? "active" : ""}`}
           onClick={() => onSelect(idx)}
         >
           {item.title}
