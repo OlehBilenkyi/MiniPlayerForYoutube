@@ -1,4 +1,5 @@
-import React, { useEffect, useCallback } from "react";
+// src/components/YouTubeAudioPlayer/YouTubePlaylistPlayer.tsx
+import React, { useEffect, useCallback, useState } from "react";
 import Header from "../Header/Header";
 import HiddenPlayer from "../HiddenPlayer/HiddenPlayer";
 import ControlsWithTooltip from "../Controls/ControlsWithTooltip/ControlsWithTooltip";
@@ -13,13 +14,13 @@ const PLAYLIST_URL =
   "https://www.youtube.com/watch?v=CdqPv4Jks_w&list=RDCdqPv4Jks_w";
 
 const YouTubePlaylistPlayer: React.FC = () => {
-  const [showVideo, setShowVideo] = React.useState(false);
+  const [showVideo, setShowVideo] = useState(false);
   const { isDark, toggleTheme } = useTheme();
 
-  // вынимаем initAnalyser единожды
+  // 1) initAnalyser один раз из стора
   const initAnalyser = usePlayerStore.getState().initAnalyser!;
 
-  // по-отдельности читаем всё остальное
+  // 2) отдельные подписки на каждое поле/метод
   const playerRef = usePlayerStore((s) => s.playerRef);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
   const play = usePlayerStore((s) => s.play);
@@ -38,21 +39,10 @@ const YouTubePlaylistPlayer: React.FC = () => {
   const onProgress = usePlayerStore((s) => s.onProgress);
   const onEnded = usePlayerStore((s) => s.onEnded);
 
-  // тема
+  // применяем тему к <body>
   useEffect(() => {
     document.body.classList.toggle("dark", isDark);
   }, [isDark]);
-
-  useEffect(() => {
-  const handleContextMenu = (e: MouseEvent) => {
-    if (showVideo) {
-      e.preventDefault();
-    }
-  };
-
-  document.addEventListener('contextmenu', handleContextMenu);
-  return () => document.removeEventListener('contextmenu', handleContextMenu);
-}, [showVideo]);
 
   // хоткеи
   useHotkeys({
@@ -66,7 +56,7 @@ const YouTubePlaylistPlayer: React.FC = () => {
     setVolume,
   });
 
-  // блокируем клики по скрытому плееру
+  // блокируем клики по внешнему контейнеру
   const blockClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -76,12 +66,12 @@ const YouTubePlaylistPlayer: React.FC = () => {
     <div className={`yt-audio-player-container${isDark ? " dark" : ""}`}>
       <Header
         title="YouTube Playlist Audio"
-        videoTitle={""}
+        videoTitle=""
         isDark={isDark}
         onToggleTheme={toggleTheme}
         extraControls={
           <button
-            onClick={() => setShowVideo(!showVideo)}
+            onClick={() => setShowVideo((v) => !v)}
             className="video-toggle-btn"
           >
             {showVideo ? "Скрыть видео" : "Показать видео"}
@@ -99,7 +89,7 @@ const YouTubePlaylistPlayer: React.FC = () => {
           onProgress={({ playedSeconds }) => onProgress({ playedSeconds })}
           onEnded={onEnded}
           initAnalyser={initAnalyser}
-          showVideo={showVideo} // передаём состояние
+          showVideo={showVideo}
         />
       </div>
 

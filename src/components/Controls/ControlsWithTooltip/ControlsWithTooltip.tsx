@@ -1,5 +1,6 @@
+// ControlsWithTooltip.tsx
 import React from "react";
-import ControlsSection, { RepeatMode } from "../ControlsSection";
+import ControlsSection from "../ControlsSection";
 import "../../YouTubeAudioPlayer/YouTubeAudioPlayer.scss";
 
 interface ControlsWithTooltipProps {
@@ -9,7 +10,7 @@ interface ControlsWithTooltipProps {
   onNext: () => void;
   isShuffle: boolean;
   onToggleShuffle: () => void;
-  repeatMode: RepeatMode;
+  repeatMode: string; // or whatever type it is
   onToggleRepeat: () => void;
 }
 
@@ -30,14 +31,10 @@ const ControlsWithTooltip: React.FC<ControlsWithTooltipProps> = ({
         onPlayPause={onPlayPause}
         onPrev={onPrev}
         onNext={onNext}
-        isShuffle={isShuffle}
-        onToggleShuffle={onToggleShuffle}
-        repeatMode={repeatMode}
-        onToggleRepeat={onToggleRepeat}
       />
       <div className="tooltip-text">
-        <p>P — Previous, N — Next</p>
-        <p>Space — Play/Pause, M — Mute/Unmute, стрелки — Seek/Volume</p>
+        <p>Space — Play/Pause</p>
+        <p>←/→ — Seek, ↑/↓ — Volume</p>
       </div>
     </div>
   );
