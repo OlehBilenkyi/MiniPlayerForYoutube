@@ -4,7 +4,7 @@ import Header from "../Header/Header";
 import HiddenPlayer from "../HiddenPlayer/HiddenPlayer";
 import ControlsWithTooltip from "../Controls/ControlsWithTooltip/ControlsWithTooltip";
 import ProgressWithTime from "../ProgressWithTime/ProgressWithTime";
-import VolumeWithLabel from "../VolumeWithLabel/VolumeWithLabel";
+import VolumeWithLabel from "../VolumeSection/VolumeWithLabel/VolumeWithLabel";
 import { useTheme } from "../../hooks/Theme/useTheme";
 import { useHotkeys } from "../../hooks/hotkeys/useHotkeys";
 import { usePlayerStore } from "../../hooks/player/usePlayerStore";

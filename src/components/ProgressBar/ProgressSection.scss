@@ -1,48 +1,93 @@
-/* src/components/YouTubeAudioPlayer/ProgressSection.scss */
 .yt-progress-container {
   width: 100%;
-  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  background: rgba(15, 15, 15, 0.6);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
 
   .time-display {
+    width: 100%;
     display: flex;
     justify-content: space-between;
-    font-size: 0.75rem;
-    margin-bottom: 4px;
+    font-size: 0.9rem;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: rgba(255, 255, 255, 0.7);
 
-    span {
-      width: 3rem;
-      text-align: center;
+    .current-time,
+    .total-time {
+      font-family: "Courier New", monospace;
+      font-weight: bold;
     }
   }
 
   .yt-progress-bar {
-    -webkit-appearance: none;
     width: 100%;
-    height: 6px;
-    border-radius: 3px;
-    background: var(--control-bg);
-    cursor: pointer;
-    transition: background 0.2s ease;
-
-    &:hover {
-      background: var(--accent-color);
-    }
+    height: 8px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(
+      to right,
+      rgba(29, 185, 84, 0.3),
+      rgba(29, 185, 84, 0.1)
+    );
+    border-radius: 4px;
+    outline: none;
+    position: relative;
+    transition: height 0.3s ease, background 0.3s ease;
 
     &::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 12px;
-      height: 12px;
+      appearance: none;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
-      background: var(--accent-color);
+      background: linear-gradient(135deg, #1db954, #1ed760);
       cursor: pointer;
-      margin-top: -3px;
+      box-shadow: 0 0 0 6px rgba(29, 185, 84, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease,
+        background 0.3s ease;
     }
+
     &::-moz-range-thumb {
-      width: 12px;
-      height: 12px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
-      background: var(--accent-color);
+      background: linear-gradient(135deg, #1db954, #1ed760);
       cursor: pointer;
+      border: none;
+      transition: transform 0.3s ease, background 0.3s ease;
     }
+
+    &:hover {
+      height: 10px;
+
+      &::-webkit-slider-thumb {
+        transform: scale(1.2);
+        box-shadow: 0 0 0 8px rgba(29, 185, 84, 0.3);
+        background: linear-gradient(135deg, #1ed760, #1db954);
+      }
+
+      &::-moz-range-thumb {
+        transform: scale(1.2);
+        background: linear-gradient(135deg, #1ed760, #1db954);
+      }
+    }
+  }
+
+  .yt-progress-bar::-webkit-slider-thumb:active {
+    transform: scale(1.4);
+    background: linear-gradient(135deg, #1ed760, #1db954);
+  }
+
+  .yt-progress-bar::-moz-range-thumb:active {
+    transform: scale(1.4);
+    background: linear-gradient(135deg, #1ed760, #1db954);
   }
 }

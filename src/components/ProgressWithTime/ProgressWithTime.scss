@@ -1,4 +1,4 @@
-.yt-volume-container {
+.progress-with-time {
   display: flex;
   align-items: center;
   width: 100%;
@@ -11,14 +11,17 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.9);
 
-  label {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 1rem;
+  .current-time,
+  .total-time {
+    font-family: "Courier New", monospace;
     font-weight: bold;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    min-width: 40px;
+    text-align: center;
   }
 
-  input[type="range"] {
+  .yt-progress-bar {
     flex: 1;
     height: 8px;
     -webkit-appearance: none;
@@ -35,8 +38,8 @@
     &::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
       background: linear-gradient(135deg, #1db954, #1ed760);
       cursor: pointer;
@@ -46,8 +49,8 @@
     }
 
     &::-moz-range-thumb {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
       background: linear-gradient(135deg, #1db954, #1ed760);
       cursor: pointer;
@@ -71,12 +74,12 @@
     }
   }
 
-  input[type="range"]::-webkit-slider-thumb:active {
+  .yt-progress-bar::-webkit-slider-thumb:active {
     transform: scale(1.4);
     background: linear-gradient(135deg, #1ed760, #1db954);
   }
 
-  input[type="range"]::-moz-range-thumb:active {
+  .yt-progress-bar::-moz-range-thumb:active {
     transform: scale(1.4);
     background: linear-gradient(135deg, #1ed760, #1db954);
   }

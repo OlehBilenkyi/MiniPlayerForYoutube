@@ -1,4 +1,5 @@
 import React from "react";
+import "./ThemeToggle.scss";
 
 interface ThemeToggleProps {
   isDarkMode: boolean;
@@ -12,7 +13,21 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ isDarkMode, onToggle }) => {
       className="theme-toggle"
       title="Toggle light/dark theme"
     >
-      {isDarkMode ? "☀️ Light" : "🌙 Dark"}
+      {isDarkMode ? (
+        <>
+          <span role="img" aria-label="sun">
+            ☀️
+          </span>{" "}
+          Light
+        </>
+      ) : (
+        <>
+          <span role="img" aria-label="moon">
+            🌙
+          </span>{" "}
+          Dark
+        </>
+      )}
     </button>
   );
 };
