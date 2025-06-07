@@ -1,26 +1,26 @@
-// src/components/YouTubeAudioPlayer/YouTubePlaylistPlayer.tsx
 import React, { useEffect, useCallback, useState } from "react";
 import Header from "../Header/Header";
 import HiddenPlayer from "../HiddenPlayer/HiddenPlayer";
 import ControlsWithTooltip from "../Controls/ControlsWithTooltip/ControlsWithTooltip";
 import ProgressWithTime from "../ProgressWithTime/ProgressWithTime";
 import VolumeWithLabel from "../VolumeSection/VolumeWithLabel/VolumeWithLabel";
+import PlaylistSection from "../Playlist/PlaylistSection/PlaylistSection";
+import VisualizerToggle from "../Visualizer/VisualizerToggle/VisualizerToggle";
 import { useTheme } from "../../hooks/Theme/useTheme";
-import { useHotkeys } from "../../hooks/hotkeys/useHotkeys";
+import { useHotkeys } from "../../hooks/Hotkeys/useHotkeys";
 import { usePlayerStore } from "../../hooks/player/usePlayerStore";
+import { usePlaylist } from "../../hooks/Playlist/usePlaylist";
+import { useVisualizerToggle } from "../../hooks/VisualizerToggle/useVisualizerToggle";
 import "./YouTubeAudioPlayer.scss";
 
-const PLAYLIST_URL =
-  "https://www.youtube.com/watch?v=CdqPv4Jks_w&list=RDCdqPv4Jks_w";
+const PLAYLIST_ID = "RDCdqPv4Jks_w";
 
 const YouTubePlaylistPlayer: React.FC = () => {
   const [showVideo, setShowVideo] = useState(false);
   const { isDark, toggleTheme } = useTheme();
 
-  // 1) initAnalyser один раз из стора
+  // Zustand-store для плеера
   const initAnalyser = usePlayerStore.getState().initAnalyser!;
-
-  // 2) отдельные подписки на каждое поле/метод
   const playerRef = usePlayerStore((s) => s.playerRef);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
   const play = usePlayerStore((s) => s.play);
@@ -39,12 +39,21 @@ const YouTubePlaylistPlayer: React.FC = () => {
   const onProgress = usePlayerStore((s) => s.onProgress);
   const onEnded = usePlayerStore((s) => s.onEnded);
 
-  // применяем тему к <body>
+  // Хук плейлиста YouTube
+  const { playlist, currentIndex, changeTrack, loading, error } =
+    usePlaylist(PLAYLIST_ID);
+
+  // Визуализатор
+  const { showVisualizer, setShowVisualizer, audioContext, sourceNode } =
+    useVisualizerToggle();
+  const toggleVisualizer = () => setShowVisualizer((v) => !v);
+
+  // Применяем тему к body
   useEffect(() => {
     document.body.classList.toggle("dark", isDark);
   }, [isDark]);
 
-  // хоткеи
+  // Хоткеи
   useHotkeys({
     isPlaying,
     progress,
@@ -56,17 +65,26 @@ const YouTubePlaylistPlayer: React.FC = () => {
     setVolume,
   });
 
-  // блокируем клики по внешнему контейнеру
+  // Блок кликов
   const blockClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
   }, []);
 
+  // URL текущего трека
+  const currentVideoId = playlist[currentIndex]?.videoId;
+  const url = currentVideoId
+    ? `https://www.youtube.com/watch?v=${currentVideoId}&list=${PLAYLIST_ID}`
+    : "";
+
+  if (error) return <div className="error">Ошибка: {error}</div>;
+  if (loading) return <div className="loading">Загрузка плейлиста…</div>;
+
   return (
     <div className={`yt-audio-player-container${isDark ? " dark" : ""}`}>
       <Header
         title="YouTube Playlist Audio"
-        videoTitle=""
+        videoTitle={playlist[currentIndex]?.title || ""}
         isDark={isDark}
         onToggleTheme={toggleTheme}
         extraControls={
@@ -82,7 +100,7 @@ const YouTubePlaylistPlayer: React.FC = () => {
       <div className="hidden-player-container" onClick={blockClick}>
         <HiddenPlayer
           playerRef={playerRef}
-          url={PLAYLIST_URL}
+          url={url}
           isPlaying={isPlaying}
           volume={volume}
           onReady={onReady}
@@ -93,15 +111,29 @@ const YouTubePlaylistPlayer: React.FC = () => {
         />
       </div>
 
+      <PlaylistSection
+        items={playlist}
+        currentIndex={currentIndex}
+        onSelect={(idx) => changeTrack(idx, true, play, seekTo)}
+      />
+
       <ControlsWithTooltip
         isPlaying={isPlaying}
         onPlayPause={() => (isPlaying ? pause() : play())}
-        onPrev={() => playerRef.current?.getInternalPlayer()?.previousVideo?.()}
-        onNext={() => playerRef.current?.getInternalPlayer()?.nextVideo?.()}
+        onPrev={() => changeTrack(currentIndex - 1, true, play, seekTo)}
+        onNext={() => changeTrack(currentIndex + 1, true, play, seekTo)}
         isShuffle={isShuffle}
         onToggleShuffle={toggleShuffle}
         repeatMode={repeatMode}
         onToggleRepeat={toggleRepeat}
+      />
+
+      <VisualizerToggle
+        show={showVisualizer}
+        toggle={toggleVisualizer}
+        isPlaying={isPlaying}
+        audioContext={audioContext}
+        sourceNode={sourceNode}
       />
 
       <div className="progress-volume-section">
@@ -120,3 +152,5 @@ const YouTubePlaylistPlayer: React.FC = () => {
 };
 
 export default YouTubePlaylistPlayer;
+
+

@@ -1,6 +1,6 @@
 import React from "react";
 import { PlaylistItem } from "../../data/mockPlaylist";
-import "./PlaylistList.scss"; // здесь находятся стили для списка
+import "./PlaylistList.scss";
 
 interface PlaylistListProps {
   items: PlaylistItem[];
@@ -16,19 +16,16 @@ const PlaylistList: React.FC<PlaylistListProps> = ({
   loading,
 }) => {
   if (loading) {
-    return <div>Загрузка плейлиста...</div>;
+    return <div className="loading-playlist">Loading playlist...</div>;
   }
-
   return (
-    <ul className="yt-playlist">
+    <ul className="yt-playlist-list">
       {items.map((item, idx) => (
         <li
           key={item.videoId}
-          className={
-            idx === currentIndex
-              ? "yt-playlist-item active"
-              : "yt-playlist-item"
-          }
+          className={`yt-playlist-list-item ${
+            idx === currentIndex ? "active" : ""
+          }`}
           onClick={() => onSelect(idx)}
         >
           {item.title}

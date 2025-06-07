@@ -11,19 +11,18 @@ const VolumeSection: React.FC<VolumeSectionProps> = ({
   onVolumeChange,
 }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVol = parseInt(e.target.value, 10);
-    onVolumeChange(newVol);
+    onVolumeChange(parseInt(e.target.value, 10));
   };
 
   return (
-    <div className="yt-volume-container">
-      <label htmlFor="yt-volume">Громкость:</label>
+    <div className="volume-section">
+      <label htmlFor="volume-input">Volume:</label>
       <input
-        id="yt-volume"
+        id="volume-input"
         type="range"
-        min="0"
-        max="100"
-        step="1"
+        min={0}
+        max={100}
+        step={1}
         value={volume}
         onChange={handleChange}
       />
