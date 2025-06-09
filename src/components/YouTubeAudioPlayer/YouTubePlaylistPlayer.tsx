@@ -74,16 +74,20 @@ const YouTubePlaylistPlayer: React.FC = () => {
   // URL текущего трека
   const currentVideoId = playlist[currentIndex]?.videoId;
   const url = currentVideoId
-    ? `https://www.youtube.com/watch?v=${currentVideoId}&list=${PLAYLIST_ID}`
+    ? `https://www.youtube.com/watch?v=${currentVideoId}`
     : "";
 
   if (error) return <div className="error">Ошибка: {error}</div>;
   if (loading) return <div className="loading">Загрузка плейлиста…</div>;
 
   return (
-    <div className={`yt-audio-player-container${isDark ? " dark" : ""}`}>
+    <div
+      className={`yt-audio-player-container ${isDark ? "dark" : ""} ${
+        showVideo ? "video-active" : "video-hidden"
+      }`}
+    >
       <Header
-        title="YouTube Playlist Audio"
+        title="Premium Sound Experience"
         videoTitle={playlist[currentIndex]?.title || ""}
         isDark={isDark}
         onToggleTheme={toggleTheme}
@@ -92,60 +96,75 @@ const YouTubePlaylistPlayer: React.FC = () => {
             onClick={() => setShowVideo((v) => !v)}
             className="video-toggle-btn"
           >
-            {showVideo ? "Скрыть видео" : "Показать видео"}
+            {showVideo ? "Hide Video" : "Show Video"}
           </button>
         }
       />
 
-      <div className="hidden-player-container" onClick={blockClick}>
-        <HiddenPlayer
-          playerRef={playerRef}
-          url={url}
+      <div className="player-content-area">
+        {/* Видео контейнер */}
+        <div className="video-container">
+          <HiddenPlayer
+            key={currentVideoId}
+            playerRef={playerRef}
+            url={url}
+            isPlaying={isPlaying}
+            volume={volume}
+            onReady={onReady}
+            onProgress={({ playedSeconds }) => onProgress({ playedSeconds })}
+            onEnded={onEnded}
+            initAnalyser={initAnalyser}
+            showVideo={showVideo}
+          />
+        </div>
+
+        {/* Основные контролы и плейлист */}
+        <div className="flex-controls-section">
+          {/* Левая колонка с контролами */}
+          <div className="main-controls-column">
+            <ProgressWithTime
+              progress={progress}
+              duration={duration}
+              onSeek={(t) => {
+                seekTo(t);
+                setProgress(t);
+              }}
+            />
+
+            <ControlsWithTooltip
+              isPlaying={isPlaying}
+              onPlayPause={() => (isPlaying ? pause() : play())}
+              onPrev={() => changeTrack(currentIndex - 1, true, play, seekTo)}
+              onNext={() => changeTrack(currentIndex + 1, true, play, seekTo)}
+              isShuffle={isShuffle}
+              onToggleShuffle={toggleShuffle}
+              repeatMode={repeatMode}
+              onToggleRepeat={toggleRepeat}
+            />
+
+            <div className="secondary-controls">
+              <VolumeWithLabel volume={volume} onVolumeChange={setVolume} />
+            </div>
+          </div>
+
+          {/* Правая колонка с плейлистом */}
+          <div className="playlist-container">
+            <PlaylistSection
+              items={playlist}
+              currentIndex={currentIndex}
+              onSelect={(idx) => changeTrack(idx, true, play, seekTo)}
+            />
+          </div>
+        </div>
+
+        {/* Визуализатор */}
+        <VisualizerToggle
+          show={showVisualizer}
+          toggle={toggleVisualizer}
           isPlaying={isPlaying}
-          volume={volume}
-          onReady={onReady}
-          onProgress={({ playedSeconds }) => onProgress({ playedSeconds })}
-          onEnded={onEnded}
-          initAnalyser={initAnalyser}
-          showVideo={showVideo}
+          audioContext={audioContext}
+          sourceNode={sourceNode}
         />
-      </div>
-
-      <PlaylistSection
-        items={playlist}
-        currentIndex={currentIndex}
-        onSelect={(idx) => changeTrack(idx, true, play, seekTo)}
-      />
-
-      <ControlsWithTooltip
-        isPlaying={isPlaying}
-        onPlayPause={() => (isPlaying ? pause() : play())}
-        onPrev={() => changeTrack(currentIndex - 1, true, play, seekTo)}
-        onNext={() => changeTrack(currentIndex + 1, true, play, seekTo)}
-        isShuffle={isShuffle}
-        onToggleShuffle={toggleShuffle}
-        repeatMode={repeatMode}
-        onToggleRepeat={toggleRepeat}
-      />
-
-      <VisualizerToggle
-        show={showVisualizer}
-        toggle={toggleVisualizer}
-        isPlaying={isPlaying}
-        audioContext={audioContext}
-        sourceNode={sourceNode}
-      />
-
-      <div className="progress-volume-section">
-        <ProgressWithTime
-          progress={progress}
-          duration={duration}
-          onSeek={(t) => {
-            seekTo(t);
-            setProgress(t);
-          }}
-        />
-        <VolumeWithLabel volume={volume} onVolumeChange={setVolume} />
       </div>
     </div>
   );

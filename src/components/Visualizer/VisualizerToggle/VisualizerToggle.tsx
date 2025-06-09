@@ -18,18 +18,16 @@ const VisualizerToggle: React.FC<VisualizerToggleProps> = ({
   sourceNode,
 }) => {
   return (
-    <div className="visualizer-toggle-container">
-      <button className="toggle-visualizer-btn" onClick={toggle}>
+    <div className={`visualizer-wrapper ${show ? "" : "hidden"}`}>
+      <button className="toggle-visualizer-btn yt-btn" onClick={toggle}>
         {show ? "Hide Visualizer" : "Show Visualizer"}
       </button>
       {show && (
-        <div className="visualizer-wrapper">
-          <Visualizer
-            isPlaying={isPlaying}
-            audioContext={audioContext}
-            sourceNode={sourceNode}
-          />
-        </div>
+        <Visualizer
+          isPlaying={isPlaying}
+          audioContext={audioContext}
+          sourceNode={sourceNode}
+        />
       )}
     </div>
   );

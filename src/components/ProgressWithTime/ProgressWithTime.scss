@@ -4,32 +4,35 @@
   width: 100%;
   gap: 1rem;
   padding: 1rem;
-  background: rgba(15, 15, 15, 0.7);
+  background-color: rgba(var(--accent-color-rgb), 0.2);
   backdrop-filter: blur(12px);
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-color);
+  overflow: hidden; /* Prevent any overflow */
 
   .current-time,
   .total-time {
     font-family: "Courier New", monospace;
     font-weight: bold;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-color);
     font-size: 0.9rem;
     min-width: 40px;
     text-align: center;
+    flex-shrink: 0; /* Prevent shrinking */
   }
 
   .yt-progress-bar {
     flex: 1;
+    min-width: 0; /* Ensure it respects the parent's width */
     height: 8px;
     -webkit-appearance: none;
     appearance: none;
     background: linear-gradient(
       to right,
-      rgba(29, 185, 84, 0.3),
-      rgba(29, 185, 84, 0.1)
+      rgba(var(--accent-color-rgb), 0.3),
+      rgba(var(--accent-color-rgb), 0.1)
     );
     border-radius: 4px;
     outline: none;
@@ -43,7 +46,7 @@
       border-radius: 50%;
       background: linear-gradient(135deg, #1db954, #1ed760);
       cursor: pointer;
-      box-shadow: 0 0 0 6px rgba(29, 185, 84, 0.2);
+      box-shadow: 0 0 0 6px rgba(var(--accent-color-rgb), 0.2);
       transition: transform 0.3s ease, box-shadow 0.3s ease,
         background 0.3s ease;
     }
@@ -64,7 +67,7 @@
 
     &::-webkit-slider-thumb:hover {
       transform: scale(1.2);
-      box-shadow: 0 0 0 8px rgba(29, 185, 84, 0.3);
+      box-shadow: 0 0 0 8px rgba(var(--accent-color-rgb), 0.3);
       background: linear-gradient(135deg, #1ed760, #1db954);
     }
 

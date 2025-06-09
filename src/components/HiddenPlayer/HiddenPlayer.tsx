@@ -43,30 +43,32 @@ const HiddenPlayer: React.FC<HiddenPlayerProps> = ({
         ref={playerRef}
         url={url}
         playing={isPlaying}
-        controls={false}
+        controls={false} // 🔴 Важно: отключает стандартные контролы
         width="100%"
         height="100%"
-        onReady={(event) => {
-          onReady(event);
-          const internal = playerRef.current?.getInternalPlayer();
-          if (internal instanceof HTMLMediaElement) {
-            initAnalyser(internal);
-          }
-        }}
-        onProgress={onProgress}
-        onEnded={onEnded}
         volume={volume / 100}
         config={{
           youtube: {
             playerVars: {
-              listType: "playlist",
-              list: url.includes("list=") ? url.split("list=")[1] : undefined,
-              rel: 0,
-              modestbranding: 1,
-              iv_load_policy: 3,
-              disablekb: 1,
-              fs: 0,
-              controls: 0,
+              // Основные параметры для отключения управления
+              controls: 0, // Полностью отключает элементы управления
+              disablekb: 1, // Блокирует клавиатурные shortcuts
+              fs: 0, // Отключает полноэкранный режим
+              modestbranding: 1, // Убирает лого YouTube (кроме маленького в углу)
+              rel: 0, // Отключает похожие видео в конце
+              iv_load_policy: 3, // Отключает аннотации
+              playsinline: 1, // Запрещает полноэкранный режим на iOS
+
+              // Дополнительные параметры для максимального ограничения
+              showinfo: 0, // Скрывает информацию о видео
+              autohide: 1, // Автоматически скрывает элементы
+              cc_load_policy: 0, // Отключает субтитры
+              color: "white", // Минимизирует элементы прогресс-бара
+              hl: "en", // Язык интерфейса (можно изменить)
+              enablejsapi: 1, // Включает JS API для большего контроля
+
+              // Особые параметры для встраивания
+              widget_referrer: "https://yourdomain.com", // Указывает ваш домен
             },
           },
         }}

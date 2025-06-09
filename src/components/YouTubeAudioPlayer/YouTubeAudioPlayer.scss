@@ -1,51 +1,173 @@
+// Основные переменные
+$accent-color: #1db954;
+$accent-light: #1ed760;
+$accent-dark: #1aa34a;
+$bg-dark: #121212;
+$bg-light: #282828;
+$text-primary: #ffffff;
+$text-secondary: #b3b3b3;
+
 .yt-audio-player-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  --accent-color: #{$accent-color};
+  --accent-light: #{$accent-light};
+  --accent-dark: #{$accent-dark};
+  --bg-dark: #{$bg-dark};
+  --bg-light: #{$bg-light};
+  --text-primary: #{$text-primary};
+  --text-secondary: #{$text-secondary};
+
   width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 1.5rem;
-  background: rgba(20, 20, 20, 0.9);
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  transition: background 0.5s ease;
+  max-width: 1200px;
+  margin: 2rem auto;
+  background: var(--bg-dark);
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 
   &.dark {
-    background: rgba(10, 10, 10, 0.95);
+    // Темная тема уже задана через переменные
+  }
+}
+
+.player-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(
+    to right,
+    rgba(30, 30, 30, 0.9),
+    rgba(20, 20, 20, 0.9)
+  );
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.player-content-area {
+  display: flex;
+  flex-direction: column;
+  padding: 0 2rem 2rem;
+}
+
+.video-container {
+  width: 100%;
+  margin-bottom: 2rem;
+  transition: all 0.4s ease;
+}
+
+.hidden-player-wrapper {
+  aspect-ratio: 16/9;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+
+  &.visible {
+    height: auto;
+    opacity: 1;
   }
 
-  .hidden-player-container {
-    width: 100%;
-    margin: 1rem 0;
-    transition: transform 0.3s ease;
+  &.hidden {
+    height: 0;
+    opacity: 0;
+    margin: 0;
+  }
+}
+
+.flex-controls-section {
+  display: flex;
+  gap: 2rem;
+  transition: all 0.4s ease;
+
+  .video-active & {
+    .main-controls-column {
+      flex: 2;
+    }
+    .playlist-container {
+      flex: 1;
+      max-height: 400px;
+    }
   }
 
-  .progress-volume-section {
-    width: 100%;
-    display: flex;
+  .video-hidden & {
+    flex-direction: column;
+
+    .main-controls-column {
+      width: 100%;
+    }
+
+    .playlist-container {
+      width: 100%;
+      max-height: 500px;
+      order: -1;
+    }
+  }
+}
+
+.main-controls-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.playlist-container {
+  background: rgba(40, 40, 40, 0.7);
+  border-radius: 16px;
+  padding: 1rem;
+  overflow-y: auto;
+  transition: all 0.4s ease;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 4px;
+  }
+}
+
+.visualizer-wrapper {
+  height: 150px;
+  margin-top: 2rem;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.4s ease;
+
+  &.hidden {
+    height: 0;
+    opacity: 0;
+    margin: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .flex-controls-section {
+    flex-direction: column;
+
+    .playlist-container {
+      order: -1;
+      max-height: 300px;
+    }
+  }
+
+  .player-header {
     flex-direction: column;
     gap: 1rem;
-    margin-top: 1rem;
+  }
+}
+@mixin smooth-transition($property: all, $duration: 0.3s) {
+  transition: $property $duration cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.player-controls button {
+  @include smooth-transition(transform);
+
+  &:hover {
+    transform: scale(1.1);
   }
 
-  .video-toggle-btn {
-    padding: 0.5rem 1rem;
-    background: rgba(29, 185, 84, 0.2);
-    color: white;
-    border: none;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
-
-    &:hover {
-      background: rgba(29, 185, 84, 0.4);
-      transform: scale(1.05);
-    }
-
-    &:active {
-      transform: scale(0.98);
-    }
+  &:active {
+    transform: scale(0.95);
   }
 }

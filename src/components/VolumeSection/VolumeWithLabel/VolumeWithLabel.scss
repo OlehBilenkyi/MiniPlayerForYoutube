@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  width: 100%;
+  width: calc(100% - 2rem); /* Adjust width to account for padding */
   padding: 1rem;
   background: rgba(15, 15, 15, 0.7);
   backdrop-filter: blur(12px);
@@ -10,6 +10,8 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.9);
+  margin: 0 auto; /* Center the component */
+  overflow: hidden; /* Prevent any content from overflowing */
 
   .volume-label {
     font-family: "Courier New", monospace;
@@ -22,6 +24,7 @@
     padding: 0.5rem 1rem;
     border-radius: 12px;
     transition: background 0.3s ease, transform 0.3s ease;
+    flex-shrink: 0; /* Prevent the label from shrinking */
 
     &:hover {
       background: rgba(29, 185, 84, 0.4);
@@ -33,18 +36,20 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    flex: 1; /* Добавляем flex: 1, чтобы контейнер занимал оставшееся пространство */
+    flex: 1;
+    min-width: 0; /* Ensure the container respects the parent's boundaries */
 
     label {
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       color: rgba(255, 255, 255, 0.8);
       font-size: 1rem;
       font-weight: bold;
-      white-space: nowrap; /* Запрещаем перенос текста */
+      white-space: nowrap;
+      flex-shrink: 0; /* Prevent the label from shrinking */
     }
 
     input[type="range"] {
-      flex: 1; /* Добавляем flex: 1, чтобы ползунок занимал оставшееся пространство */
+      flex: 1;
       height: 8px;
       -webkit-appearance: none;
       appearance: none;
@@ -56,7 +61,6 @@
       border-radius: 4px;
       outline: none;
       transition: height 0.3s ease, background 0.3s ease;
-      overflow: hidden; /* Скрываем все, что выходит за границы */
 
       &::-webkit-slider-thumb {
         -webkit-appearance: none;
