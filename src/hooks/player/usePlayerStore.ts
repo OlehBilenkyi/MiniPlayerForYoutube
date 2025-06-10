@@ -1,3 +1,4 @@
+// usePlayerStore.ts
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import type { RefObject } from "react";
@@ -23,6 +24,7 @@ interface PlayerStoreState {
   onReady: () => void;
   onProgress: (state: { playedSeconds: number }) => void;
   onEnded: () => void;
+  onError: (error: Error) => void;
   initAnalyser: (media: HTMLMediaElement) => void;
 }
 
@@ -33,7 +35,7 @@ export const usePlayerStore = create<PlayerStoreState>()(
     progress: 0,
     duration: 0,
     volume: 100,
-    repeatMode: "off",
+    repeatMode: "none",
     isShuffle: false,
 
     play: () => set({ isPlaying: true }),
@@ -83,6 +85,11 @@ export const usePlayerStore = create<PlayerStoreState>()(
       } else {
         set({ isPlaying: false });
       }
+    },
+
+    onError: (error) => {
+      console.error("Player error:", error);
+      set({ isPlaying: false });
     },
 
     initAnalyser: () => {

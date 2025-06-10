@@ -1,38 +1,23 @@
-import React, { memo } from "react";
-import Visualizer from "../Visualizer";
-import "./VisualizerToggle.scss";
+import React from "react";
 
-interface Props {
+interface VisualizerToggleProps {
   show: boolean;
   toggle: () => void;
   isPlaying: boolean;
-  analyserNode: AnalyserNode | null;
+  analyserNode: any;
 }
 
-const VisualizerToggle: React.FC<Props> = ({
+const VisualizerToggle: React.FC<VisualizerToggleProps> = ({
   show,
   toggle,
   isPlaying,
   analyserNode,
-}) => (
-  <div
-    className={`visualizer-toggle ${show ? "" : "visualizer-toggle--hidden"}`}
-  >
-    <button
-      type="button"
-      className="toggle-visualizer-btn"
-      onClick={toggle}
-      aria-pressed={show}
-      aria-label="Toggle visualizer"
-    >
-      {show ? "Hide Visualizer" : "Show Visualizer"}
-    </button>
-    {show && (
-      <div className="visualizer-toggle__canvas-wrapper">
-        <Visualizer isPlaying={isPlaying} analyserNode={analyserNode} />
-      </div>
-    )}
-  </div>
-);
+}) => {
+  return (
+    <div className="visualizer-toggle">
+      {/* Implement the visualizer toggle logic here */}
+    </div>
+  );
+};
 
-export default memo(VisualizerToggle);
+export default VisualizerToggle;

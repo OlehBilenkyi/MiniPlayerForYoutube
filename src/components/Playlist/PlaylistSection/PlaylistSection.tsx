@@ -1,3 +1,4 @@
+// PlaylistSection.tsx
 import React, { useEffect, useRef, memo } from "react";
 import "./PlaylistSection.scss";
 
@@ -22,7 +23,7 @@ const PlaylistSection: React.FC<PlaylistSectionProps> = ({
   const listRef = useRef<HTMLUListElement>(null);
   const activeRef = useRef<HTMLLIElement>(null);
 
-  // Плавная прокрутка к активному элементу
+  // Smooth scroll to the active element
   useEffect(() => {
     if (activeRef.current) {
       activeRef.current.scrollIntoView({
@@ -33,7 +34,7 @@ const PlaylistSection: React.FC<PlaylistSectionProps> = ({
   }, [currentIndex]);
 
   if (loading) {
-    return <div className="yt-playlist__loading">Loading playlist…</div>;
+    return <div className="yt-playlist__loading">Loading playlist...</div>;
   }
 
   if (items.length === 0) {
@@ -51,7 +52,7 @@ const PlaylistSection: React.FC<PlaylistSectionProps> = ({
         <li
           id={`item-${idx}`}
           ref={idx === currentIndex ? activeRef : null}
-          key={`${item.videoId}-${idx}`}  // уникальный ключ
+          key={`${item.videoId}-${idx}`} // Unique key
           role="option"
           aria-selected={idx === currentIndex}
           className={`yt-playlist__item ${

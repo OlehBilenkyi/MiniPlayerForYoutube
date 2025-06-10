@@ -1,6 +1,5 @@
-
+// Header.tsx
 import React, { memo } from "react";
-import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import "./Header.scss";
 
 interface Props {
@@ -10,6 +9,15 @@ interface Props {
   onToggleTheme: () => void;
   extraControls?: React.ReactNode;
 }
+
+const ThemeToggle: React.FC<{ isDarkMode: boolean; onToggle: () => void }> = ({
+  isDarkMode,
+  onToggle,
+}) => (
+  <button onClick={onToggle} className="theme-toggle">
+    {isDarkMode ? "Light Mode" : "Dark Mode"}
+  </button>
+);
 
 const Header: React.FC<Props> = ({
   title,
@@ -31,4 +39,3 @@ const Header: React.FC<Props> = ({
 );
 
 export default memo(Header);
-

@@ -17,6 +17,20 @@ interface YouTubeApiResponse {
   nextPageToken?: string;
 }
 
+interface UsePlaylistResult {
+  playlist: PlaylistItem[];
+  currentIndex: number;
+  changeTrack: (
+    newIndex: number,
+    autoPlay: boolean,
+    playFn: () => void,
+    seekFn: (sec: number) => void,
+    pauseFn?: () => void
+  ) => void;
+  loading: boolean;
+  error: Error | null;
+}
+
 const API_KEY = import.meta.env.VITE_PLAYER as string;
 const YT_PLAYLIST_ITEMS_API =
   "https://www.googleapis.com/youtube/v3/playlistItems";
@@ -42,33 +56,29 @@ async function fetchPage(
   return resp.json();
 }
 
-export function usePlaylist(playlistId: string) {
+export function usePlaylist(playlistId: string): UsePlaylistResult {
   const [playlist, setPlaylist] = useState<PlaylistItem[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
   const loadPlaylist = useCallback(async () => {
     setLoading(true);
     setError(null);
 
-    if (!API_KEY) {
-      setError("API key is missing");
-      setLoading(false);
-      return;
-    }
-
-    if (!playlistId) {
-      setError("Playlist ID is required");
-      setLoading(false);
-      return;
-    }
-
     try {
+      if (!API_KEY) {
+        throw new Error("API key is missing");
+      }
+
+      if (!playlistId) {
+        throw new Error("Playlist ID is required");
+      }
+
       let all: PlaylistItem[] = [];
       let nextPage: string | undefined = undefined;
       let pageCount = 0;
-      const MAX_PAGES = 10; // Лимит страниц для защиты
+      const MAX_PAGES = 10;
 
       while (pageCount < MAX_PAGES) {
         const data = await fetchPage(playlistId, API_KEY, nextPage);
@@ -85,15 +95,15 @@ export function usePlaylist(playlistId: string) {
       }
 
       if (all.length === 0) {
-        setError("Playlist is empty or unavailable");
-      } else {
-        setPlaylist(all);
-        setCurrentIndex((prev) => (prev >= all.length ? 0 : prev));
+        throw new Error("Playlist is empty or unavailable");
       }
+
+      setPlaylist(all);
+      setCurrentIndex((prev) => (prev >= all.length ? 0 : prev));
     } catch (e: unknown) {
-      const error = e instanceof Error ? e : new Error("Unknown error");
+      const error = e instanceof Error ? e : new Error(String(e));
       console.error("Failed to load playlist:", error);
-      setError(error.message);
+      setError(error);
     } finally {
       setLoading(false);
     }
@@ -113,9 +123,7 @@ export function usePlaylist(playlistId: string) {
     ) => {
       if (newIndex < 0 || newIndex >= playlist.length) return;
 
-      // Опциональная пауза перед переключением
       pauseFn?.();
-
       setCurrentIndex(newIndex);
       seekFn(0);
 

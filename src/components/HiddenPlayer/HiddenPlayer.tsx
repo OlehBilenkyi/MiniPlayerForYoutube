@@ -1,9 +1,5 @@
-import React, {
-  forwardRef,
-  useImperativeHandle,
-  useRef,
-  useCallback,
-} from "react";
+// HiddenPlayer.tsx
+import React, { forwardRef, useImperativeHandle, useRef, useCallback } from "react";
 import ReactPlayer from "react-player";
 import "./HiddenPlayer.scss";
 
@@ -14,6 +10,7 @@ interface Props {
   onReady: () => void;
   onProgress: (state: { playedSeconds: number }) => void;
   onEnded: () => void;
+  onError: (error: Error) => void; // Add error handling
   initAnalyser: (media: HTMLMediaElement) => void;
   showVideo: boolean;
 }
@@ -27,6 +24,7 @@ const HiddenPlayer = forwardRef<ReactPlayer, Props>(
       onReady,
       onProgress,
       onEnded,
+      onError,
       initAnalyser,
       showVideo,
     },
@@ -34,12 +32,10 @@ const HiddenPlayer = forwardRef<ReactPlayer, Props>(
   ) => {
     const localRef = useRef<ReactPlayer>(null);
 
-    // expose to parent
     useImperativeHandle(ref, () => localRef.current!);
 
     const handleReady = useCallback(() => {
       const player = localRef.current!;
-      // получаем HTMLMediaElement
       const internal = player.getInternalPlayer();
       if (internal instanceof HTMLMediaElement) {
         initAnalyser(internal);
@@ -64,6 +60,7 @@ const HiddenPlayer = forwardRef<ReactPlayer, Props>(
           onReady={handleReady}
           onProgress={onProgress}
           onEnded={onEnded}
+          onError={onError} // Add error handling
           config={{
             youtube: {
               playerVars: {
