@@ -2,6 +2,7 @@
 import React from "react";
 import HiddenPlayer from "../HiddenPlayer/HiddenPlayer";
 import PlaylistSection from "../Playlist/PlaylistSection/PlaylistSection";
+import "./LayoutMain.sass";
 
 interface LayoutMainProps {
   url: string;

@@ -7,8 +7,8 @@ import { usePlaylist } from "../../hooks/Playlist/usePlaylist";
 import { useAudioAnalyser } from "../../hooks/AudioAnalyser/useAudioAnalyser";
 import { useVisualizerToggle } from "../../hooks/VisualizerToggle/useVisualizerToggle";
 import Header from "../Header/Header";
-import LayoutMain from "./LayoutMain";
-import LayoutControls from "./LayoutControls";
+import LayoutMain from "../LayoutMain/LayoutMain";
+import LayoutControls from "../LayoutMain/LayoutControls/LayoutControls";
 import "./YouTubeAudioPlayer.scss";
 
 const PLAYLIST_ID = "RDCdqPv4Jks_w";

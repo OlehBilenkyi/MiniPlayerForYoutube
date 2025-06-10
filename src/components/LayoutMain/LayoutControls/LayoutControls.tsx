@@ -1,9 +1,10 @@
 // LayoutControls.tsx
 import React from "react";
-import ControlsWithTooltip from "../Controls/ControlsWithTooltip/ControlsWithTooltip";
-import VisualizerToggle from "../Visualizer/VisualizerToggle/VisualizerToggle";
-import { ProgressWithTime } from "../ProgressWithTime/ProgressWithTime";
-import VolumeWithLabel from "../VolumeSection/VolumeWithLabel/VolumeWithLabel";
+import ControlsWithTooltip from "../../Controls/ControlsWithTooltip/ControlsWithTooltip";
+import VisualizerToggle from "../../Visualizer/VisualizerToggle/VisualizerToggle";
+import { ProgressWithTime } from "../../ProgressWithTime/ProgressWithTime";
+import VolumeWithLabel from "../../VolumeSection/VolumeWithLabel/VolumeWithLabel";
+import "./LayoutControls.sass";
 
 interface LayoutControlsProps {
   isPlaying: boolean;

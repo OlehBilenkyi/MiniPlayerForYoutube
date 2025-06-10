@@ -1,0 +1,44 @@
+.layout-main
+  display: flex
+  flex-direction: column
+  width: 100%
+  padding: 1rem
+  gap: 1rem
+  background-color: var(--bg-light)
+  border-radius: 12px
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)
+  transition: all 0.3s ease
+
+  .video-area
+    width: 100%
+    aspect-ratio: 16/9
+    background-color: var(--bg-dark)
+    border-radius: 8px
+    overflow: hidden
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2)
+
+  .playlist-area
+    flex: 1
+    background-color: var(--control-bg)
+    border-radius: 8px
+    padding: 1rem
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)
+    overflow-y: auto
+    max-height: 400px
+
+    &::-webkit-scrollbar
+      width: 8px
+
+    &::-webkit-scrollbar-thumb
+      background-color: var(--accent-color)
+      border-radius: 4px
+
+@media (min-width: 768px)
+  .layout-main
+    flex-direction: row
+
+    .video-area
+      flex: 2
+
+    .playlist-area
+      flex: 1
