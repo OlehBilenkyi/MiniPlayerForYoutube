@@ -1,33 +1,35 @@
-import React from "react";
+import React, { memo, useCallback } from "react";
 import "./VolumeSection.scss";
 
-interface VolumeSectionProps {
-  volume: number; // 0–100
+interface Props {
+  volume: number;
   onVolumeChange: (vol: number) => void;
 }
 
-const VolumeSection: React.FC<VolumeSectionProps> = ({
-  volume,
-  onVolumeChange,
-}) => {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onVolumeChange(parseInt(e.target.value, 10));
-  };
+const VolumeSection: React.FC<Props> = ({ volume, onVolumeChange }) => {
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      onVolumeChange(parseInt(e.target.value, 10)),
+    [onVolumeChange]
+  );
 
   return (
-    <div className="volume-section">
-      <label htmlFor="volume-input">Volume:</label>
+    <label className="volume-section">
+      Volume:
       <input
-        id="volume-input"
         type="range"
         min={0}
         max={100}
         step={1}
         value={volume}
         onChange={handleChange}
+        role="slider"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={volume}
       />
-    </div>
+    </label>
   );
 };
 
-export default VolumeSection;
+export default memo(VolumeSection);

@@ -5,9 +5,7 @@ export function useAudioAnalyser() {
   const sourceNodeRef = useRef<MediaElementAudioSourceNode | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
 
-  // ЗДЕСЬ
   const initAnalyser = useCallback((media: HTMLMediaElement) => {
-    // если уже инициализировали — ничего не делаем
     if (audioContextRef.current) return;
 
     const ctx = new AudioContext();

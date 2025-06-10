@@ -1,71 +1,51 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, memo } from "react";
 import "./Visualizer.scss";
 
-interface VisualizerProps {
+interface Props {
   isPlaying: boolean;
-  audioContext: AudioContext | null;
-  sourceNode: MediaElementAudioSourceNode | null;
+  analyserNode: AnalyserNode | null;
 }
 
-const Visualizer: React.FC<VisualizerProps> = ({
-  isPlaying,
-  audioContext,
-  sourceNode,
-}) => {
+const Visualizer: React.FC<Props> = ({ isPlaying, analyserNode }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number>(0);
-  const analyserRef = useRef<AnalyserNode | null>(null);
+  const animationRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!audioContext || !sourceNode) return;
-    const analyser = audioContext.createAnalyser();
-    analyser.fftSize = 256;
-    sourceNode.connect(analyser);
-    analyserRef.current = analyser;
-    return () => {
-      analyser.disconnect();
-    };
-  }, [audioContext, sourceNode]);
+    if (!analyserNode) return;
+    const canvas = canvasRef.current!;
+    const ctx = canvas.getContext("2d")!;
+    const bufferLength = analyserNode.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
 
-  useEffect(() => {
     const draw = () => {
-      const analyser = analyserRef.current;
-      const canvas = canvasRef.current;
-      if (!analyser || !canvas) return;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-      const bufferLength = analyser.frequencyBinCount;
-      const dataArray = new Uint8Array(bufferLength);
-      analyser.getByteFrequencyData(dataArray);
+      analyserNode.getByteFrequencyData(dataArray);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const barWidth = (canvas.width / bufferLength) * 2.5;
-      let x = 0;
-      for (let i = 0; i < bufferLength; i++) {
-        const barHeight = (dataArray[i] / 255) * canvas.height;
-        ctx.fillStyle = `hsl(${i * 2}, 100%, 50%)`;
-        ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-        x += barWidth + 1;
-      }
+
+      const barWidth = canvas.width / bufferLength;
+      dataArray.forEach((v, i) => {
+        const h = (v / 255) * canvas.height;
+        ctx.fillStyle = `hsl(${(i / bufferLength) * 360},100%,50%)`;
+        ctx.fillRect(i * barWidth, canvas.height - h, barWidth, h);
+      });
+
       animationRef.current = requestAnimationFrame(draw);
     };
 
     if (isPlaying) {
       draw();
-    } else {
+    } else if (animationRef.current !== null) {
       cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
     }
 
-    return () => cancelAnimationFrame(animationRef.current);
-  }, [isPlaying]);
+    return () => {
+      if (animationRef.current !== null) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [isPlaying, analyserNode]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      width={300}
-      height={100}
-      className="visualizer-canvas"
-    />
-  );
+  return <canvas ref={canvasRef} className="visualizer-canvas" />;
 };
 
-export default Visualizer;
+export default memo(Visualizer);

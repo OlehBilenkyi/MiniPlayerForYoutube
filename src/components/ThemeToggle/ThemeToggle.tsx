@@ -1,17 +1,21 @@
-import React from "react";
+import React, { memo } from "react";
 import "./ThemeToggle.scss";
 
-interface ThemeToggleProps {
+interface Props {
   isDarkMode: boolean;
   onToggle: () => void;
 }
 
-const ThemeToggle: React.FC<ThemeToggleProps> = ({ isDarkMode, onToggle }) => {
-  return (
-    <button onClick={onToggle} className="theme-toggle">
-      {isDarkMode ? "☀️ Light" : "🌙 Dark"}
-    </button>
-  );
-};
+const ThemeToggle: React.FC<Props> = ({ isDarkMode, onToggle }) => (
+  <button
+    type="button"
+    className="theme-toggle"
+    onClick={onToggle}
+    aria-pressed={isDarkMode}
+    aria-label="Toggle theme"
+  >
+    {isDarkMode ? "☀️ Light" : "🌙 Dark"}
+  </button>
+);
 
-export default ThemeToggle;
+export default memo(ThemeToggle);

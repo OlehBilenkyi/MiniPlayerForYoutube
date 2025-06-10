@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, memo } from "react";
+import React, { useEffect, useRef } from "react";
 import "./PlaylistSection.scss";
 
 export interface PlaylistItem {
@@ -22,7 +22,6 @@ const PlaylistSection: React.FC<PlaylistSectionProps> = ({
   const listRef = useRef<HTMLUListElement>(null);
   const activeRef = useRef<HTMLLIElement>(null);
 
-  // Плавная прокрутка к активному элементу
   useEffect(() => {
     if (activeRef.current) {
       activeRef.current.scrollIntoView({
@@ -51,7 +50,7 @@ const PlaylistSection: React.FC<PlaylistSectionProps> = ({
         <li
           id={`item-${idx}`}
           ref={idx === currentIndex ? activeRef : null}
-          key={`${item.videoId}-${idx}`}  // уникальный ключ
+          key={`${item.videoId}-${idx}`} // Используем комбинацию videoId и индекса
           role="option"
           aria-selected={idx === currentIndex}
           className={`yt-playlist__item ${
@@ -66,4 +65,4 @@ const PlaylistSection: React.FC<PlaylistSectionProps> = ({
   );
 };
 
-export default memo(PlaylistSection);
+export default PlaylistSection;

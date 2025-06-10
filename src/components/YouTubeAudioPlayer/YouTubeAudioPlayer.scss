@@ -28,6 +28,45 @@ $text-secondary: #b3b3b3;
   &.dark {
     // Темная тема уже задана через переменные
   }
+
+  &.layout--with-video {
+    .layout-main {
+      display: grid;
+      grid-template-columns: 2fr 1fr; // видео в 2 раза шире плейлиста
+      grid-gap: 1rem;
+    }
+  }
+
+  &.layout--no-video {
+    .layout-main {
+      display: grid;
+      grid-template-columns: 1fr; // скрываем видео, разворачиваем плейлист
+      grid-gap: 1rem;
+    }
+    .video-area {
+      display: none;
+    }
+  }
+
+  .layout-main {
+    width: 100%;
+    transition: all 0.5s ease;
+
+    .video-area,
+    .playlist-area {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.5s ease;
+    }
+  }
+
+  .layout-controls {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
 }
 
 .player-header {
@@ -145,17 +184,17 @@ $text-secondary: #b3b3b3;
   .flex-controls-section {
     flex-direction: column;
 
-    .playlist-container {
-      order: -1;
-      max-height: 300px;
+    .yt-audio-player-container.layout--with-video .layout-main {
+      grid-template-columns: 1fr;
     }
   }
 
-  .player-header {
-    flex-direction: column;
-    gap: 1rem;
+  .playlist-container {
+    order: -1;
+    max-height: 300px;
   }
 }
+
 @mixin smooth-transition($property: all, $duration: 0.3s) {
   transition: $property $duration cubic-bezier(0.25, 0.8, 0.25, 1);
 }

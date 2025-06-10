@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { PlaylistItem } from "../../data/mockPlaylist";
 import "./PlaylistList.scss";
 
@@ -22,7 +22,7 @@ const PlaylistList: React.FC<PlaylistListProps> = ({
     <ul className="yt-playlist-list">
       {items.map((item, idx) => (
         <li
-          key={item.videoId}
+          key={`${item.videoId}-${idx}`} // уникальный ключ
           className={`yt-playlist-list-item ${
             idx === currentIndex ? "active" : ""
           }`}
@@ -35,4 +35,4 @@ const PlaylistList: React.FC<PlaylistListProps> = ({
   );
 };
 
-export default PlaylistList;
+export default memo(PlaylistList);
