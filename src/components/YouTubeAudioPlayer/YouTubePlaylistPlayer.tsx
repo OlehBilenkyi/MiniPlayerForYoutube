@@ -55,6 +55,8 @@ const YouTubePlaylistPlayer: React.FC = () => {
     pause,
     seekTo,
     setVolume,
+    toggleShuffle,
+    toggleRepeat,
   });
 
   const handlePlayerReady = useCallback(() => {

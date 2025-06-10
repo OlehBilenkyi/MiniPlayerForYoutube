@@ -27,6 +27,7 @@ interface UsePlaylistResult {
     seekFn: (sec: number) => void,
     pauseFn?: () => void
   ) => void;
+  reload: () => void;
   loading: boolean;
   error: Error | null;
 }
@@ -46,13 +47,10 @@ async function fetchPage(
     playlistId,
     key: apiKey,
   });
-
   if (pageToken) params.set("pageToken", pageToken);
 
   const resp = await fetch(`${YT_PLAYLIST_ITEMS_API}?${params.toString()}`);
-  if (!resp.ok) {
-    throw new Error(`YouTube API error: ${resp.status}`);
-  }
+  if (!resp.ok) throw new Error(`YouTube API error: ${resp.status}`);
   return resp.json();
 }
 
@@ -65,45 +63,33 @@ export function usePlaylist(playlistId: string): UsePlaylistResult {
   const loadPlaylist = useCallback(async () => {
     setLoading(true);
     setError(null);
-
     try {
-      if (!API_KEY) {
-        throw new Error("API key is missing");
-      }
-
-      if (!playlistId) {
-        throw new Error("Playlist ID is required");
-      }
+      if (!API_KEY) throw new Error("API key is missing");
+      if (!playlistId) throw new Error("Playlist ID is required");
 
       let all: PlaylistItem[] = [];
-      let nextPage: string | undefined = undefined;
+      let nextPage: string | undefined;
       let pageCount = 0;
       const MAX_PAGES = 10;
 
       while (pageCount < MAX_PAGES) {
         const data = await fetchPage(playlistId, API_KEY, nextPage);
-        const items = data.items.map((item) => ({
-          videoId: item.snippet.resourceId.videoId,
-          title: item.snippet.title,
-        }));
-
-        all = [...all, ...items];
+        all.push(
+          ...data.items.map((item) => ({
+            videoId: item.snippet.resourceId.videoId,
+            title: item.snippet.title,
+          }))
+        );
         nextPage = data.nextPageToken;
         pageCount++;
-
         if (!nextPage) break;
       }
 
-      if (all.length === 0) {
-        throw new Error("Playlist is empty or unavailable");
-      }
-
+      if (all.length === 0) throw new Error("Playlist is empty");
       setPlaylist(all);
       setCurrentIndex((prev) => (prev >= all.length ? 0 : prev));
-    } catch (e: unknown) {
-      const error = e instanceof Error ? e : new Error(String(e));
-      console.error("Failed to load playlist:", error);
-      setError(error);
+    } catch (e) {
+      setError(e instanceof Error ? e : new Error(String(e)));
     } finally {
       setLoading(false);
     }
@@ -112,6 +98,8 @@ export function usePlaylist(playlistId: string): UsePlaylistResult {
   useEffect(() => {
     loadPlaylist();
   }, [loadPlaylist]);
+
+  const reload = useCallback(() => void loadPlaylist(), [loadPlaylist]);
 
   const changeTrack = useCallback(
     (
@@ -122,11 +110,9 @@ export function usePlaylist(playlistId: string): UsePlaylistResult {
       pauseFn?: () => void
     ) => {
       if (newIndex < 0 || newIndex >= playlist.length) return;
-
       pauseFn?.();
       setCurrentIndex(newIndex);
       seekFn(0);
-
       if (autoPlay) {
         setTimeout(() => {
           seekFn(0);
@@ -137,5 +123,12 @@ export function usePlaylist(playlistId: string): UsePlaylistResult {
     [playlist.length]
   );
 
-  return { playlist, currentIndex, changeTrack, loading, error };
+  return {
+    playlist,
+    currentIndex,
+    changeTrack,
+    reload,
+    loading,
+    error,
+  };
 }

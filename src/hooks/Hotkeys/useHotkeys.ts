@@ -9,17 +9,21 @@ interface HotkeysParams {
   pause: () => void;
   seekTo: (sec: number) => void;
   setVolume: (vol: number) => void;
+  toggleShuffle: () => void;
+  toggleRepeat: () => void;
 }
 
 export function useHotkeys({
-  isPlaying,
-  progress,
-  duration,
-  volume,
-  play,
-  pause,
-  seekTo,
-  setVolume,
+     isPlaying,
+    progress,
+    duration,
+    volume,
+    play,
+    pause,
+    seekTo,
+    setVolume,
+    toggleShuffle,
+    toggleRepeat,
 }: HotkeysParams) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -51,10 +55,29 @@ export function useHotkeys({
           e.preventDefault();
           setVolume(volume > 0 ? 0 : 50);
           break;
+        case "KeyS":
+          e.preventDefault();
+          toggleShuffle();
+          break;
+        case "KeyR":
+          e.preventDefault();
+          toggleRepeat();
+          break;
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isPlaying, progress, duration, volume, play, pause, seekTo, setVolume]);
+  }, [
+    isPlaying,
+    progress,
+    duration,
+    volume,
+    play,
+    pause,
+    seekTo,
+    setVolume,
+    toggleShuffle,
+    toggleRepeat,
+  ]);
 }
