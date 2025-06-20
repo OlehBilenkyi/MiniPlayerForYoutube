@@ -29,7 +29,6 @@ const ControlsSection: React.FC<Props> = ({
       onClick={onPrev}
       aria-label="Previous track"
     >
-      {/* Prev Icon */}
       <svg viewBox="0 0 24 24">
         <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
       </svg>
@@ -37,14 +36,11 @@ const ControlsSection: React.FC<Props> = ({
 
     <button
       type="button"
-      className={`control-btn control-btn--shuffle ${
-        isShuffle ? "control-btn--active" : ""
-      }`}
+      className={`control-btn control-btn--shuffle ${isShuffle ? "control-btn--active" : ""}`}
       onClick={onToggleShuffle}
       aria-pressed={isShuffle}
       aria-label="Toggle shuffle"
     >
-      {/* Shuffle Icon */}
       <svg viewBox="0 0 24 24">
         <path d="M16 6h2v2h-2zM4 6h2v2H4zM4 16h2v2H4zM16 16h2v2h-2zM6.5 11l5 5h2l-5-5h-2z" />
       </svg>
@@ -74,7 +70,6 @@ const ControlsSection: React.FC<Props> = ({
       aria-pressed={repeatMode !== "none"}
       aria-label={`Repeat mode: ${repeatMode}`}
     >
-      {/* Repeat Icon: change style based on repeatMode */}
       <svg viewBox="0 0 24 24">
         {repeatMode === "one" ? (
           <path d="M7 7h10v2l3-3-3-3v2H7v2zM17 13h-10v-2l-3 3 3 3v-2h10v-2zm-5 1h-2v-4h2v4z" />
@@ -90,7 +85,6 @@ const ControlsSection: React.FC<Props> = ({
       onClick={onNext}
       aria-label="Next track"
     >
-      {/* Next Icon */}
       <svg viewBox="0 0 24 24">
         <path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z" />
       </svg>

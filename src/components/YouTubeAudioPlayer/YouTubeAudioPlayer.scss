@@ -207,3 +207,22 @@ $text-secondary: #b3b3b3;
     transform: scale(0.95);
   }
 }
+.yt-audio-player-container {
+  &.layout--with-video {
+    .layout-controls {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+  }
+  &.layout--no-video {
+    .layout-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.5rem;
+    }
+  }
+}

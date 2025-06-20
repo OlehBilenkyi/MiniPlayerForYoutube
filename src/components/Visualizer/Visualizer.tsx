@@ -20,26 +20,24 @@ const Visualizer: React.FC<Props> = ({ isPlaying, analyserNode }) => {
     const draw = () => {
       analyserNode.getByteFrequencyData(dataArray);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
       const barWidth = canvas.width / bufferLength;
       dataArray.forEach((v, i) => {
         const h = (v / 255) * canvas.height;
         ctx.fillStyle = `hsl(${(i / bufferLength) * 360},100%,50%)`;
         ctx.fillRect(i * barWidth, canvas.height - h, barWidth, h);
       });
-
       animationRef.current = requestAnimationFrame(draw);
     };
 
     if (isPlaying) {
       draw();
-    } else if (animationRef.current !== null) {
+    } else if (animationRef.current != null) {
       cancelAnimationFrame(animationRef.current);
       animationRef.current = null;
     }
 
     return () => {
-      if (animationRef.current !== null) {
+      if (animationRef.current != null) {
         cancelAnimationFrame(animationRef.current);
       }
     };
