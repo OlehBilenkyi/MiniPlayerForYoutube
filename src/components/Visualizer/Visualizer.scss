@@ -1,4 +1,3 @@
-
 .visualizer-container {
   width: 100%;
   height: 100px;
@@ -21,4 +20,9 @@
     width: 100%;
     height: 100%;
   }
+}
+.visualizer-wrapper canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
 }

@@ -20,15 +20,15 @@ const HiddenPlayer = forwardRef<ReactPlayer, Props>(
 
     useImperativeHandle(ref, () => localRef.current!);
 
-    const handleReady = useCallback(() => {
-      const player = localRef.current!;
-      const internal = player.getInternalPlayer();
-      if (internal instanceof HTMLMediaElement) {
-        initAnalyser(internal);
-        internal.volume = volume / 100;
-      }
-      onReady();
-    }, [initAnalyser, onReady, volume]);
+const handleReady = useCallback(() => {
+  const internal = localRef.current!.getInternalPlayer();
+  if (internal instanceof HTMLMediaElement) {
+    initAnalyser(internal);
+    internal.volume = volume / 100;
+  }
+  onReady();
+}, [initAnalyser, onReady, volume]);
+
 
     return (
       <div className={`hidden-player-wrapper ${showVideo ? "hidden-player-wrapper--visible" : ""}`}>

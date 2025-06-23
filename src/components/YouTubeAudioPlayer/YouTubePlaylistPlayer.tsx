@@ -1,14 +1,13 @@
-// YouTubePlaylistPlayer.tsx
-import React, { useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import Header from "../Header/Header";
+import LayoutMain from "../LayoutMain/LayoutMain";
+import LayoutControls from "../LayoutMain/LayoutControls/LayoutControls";
 import { useTheme } from "../../hooks/Theme/useTheme";
 import { useHotkeys } from "../../hooks/Hotkeys/useHotkeys";
 import { usePlayerStore } from "../../hooks/Player/usePlayerStore";
 import { usePlaylist } from "../../hooks/Playlist/usePlaylist";
 import { useAudioAnalyser } from "../../hooks/AudioAnalyser/useAudioAnalyser";
 import { useVisualizerToggle } from "../../hooks/VisualizerToggle/useVisualizerToggle";
-import Header from "../Header/Header";
-import LayoutMain from "../LayoutMain/LayoutMain";
-import LayoutControls from "../LayoutMain/LayoutControls/LayoutControls";
 import "./YouTubeAudioPlayer.scss";
 
 const PLAYLIST_ID = "RDCdqPv4Jks_w";
@@ -34,13 +33,15 @@ const YouTubePlaylistPlayer: React.FC = () => {
     toggleShuffle,
     onReady,
     onProgress,
-    onEnded,
     onError,
-    initAnalyser: storeInitAnalyser,
   } = usePlayerStore();
 
+  // 1) хук анализатора
   const { initAnalyser, analyserNode } = useAudioAnalyser();
-  const { showVisualizer, setShowVisualizer } = useVisualizerToggle();
+  // 2) хук показа/скрытия визуализатора
+  const { showVisualizer, toggleVisualizer } = useVisualizerToggle();
+
+  const [showVideo, setShowVideo] = useState(false);
 
   useEffect(() => {
     document.body.classList.toggle("dark", isDark);
@@ -64,14 +65,20 @@ const YouTubePlaylistPlayer: React.FC = () => {
     const internal = player?.getInternalPlayer();
     if (internal instanceof HTMLMediaElement) {
       initAnalyser(internal);
-      storeInitAnalyser(internal);
+      internal.volume = volume / 100;
     }
     onReady();
-  }, [initAnalyser, playerRef, onReady, storeInitAnalyser]);
+  }, [initAnalyser, onReady, playerRef, volume]);
 
-  const toggleVisualizer = useCallback(() => {
-    setShowVisualizer((v) => !v);
-  }, [setShowVisualizer]);
+  const handleEnded = useCallback(() => {
+    if (repeatMode === "one") {
+      playerRef.current?.seekTo(0);
+      play();
+    } else {
+      const next = (currentIndex + 1) % playlist.length;
+      changeTrack(next, true, play, seekTo);
+    }
+  }, [currentIndex, playlist.length, repeatMode, changeTrack, play, seekTo]);
 
   const currentVideoId = playlist[currentIndex]?.videoId;
   const url = currentVideoId
@@ -79,17 +86,12 @@ const YouTubePlaylistPlayer: React.FC = () => {
     : "";
 
   if (loading) return <div className="loading">Loading playlist...</div>;
-  if (error)
-    return (
-      <div className="error">
-        Error: {error instanceof Error ? error.message : String(error)}
-      </div>
-    );
+  if (error) return <div className="error">Error: {error.message}</div>;
 
   return (
     <div
-      className={`yt-audio-player-container ${isDark ? "dark" : ""} ${
-        url ? "layout--with-video" : "layout--no-video"
+      className={`yt-audio-player-container ${
+        showVideo ? "layout--with-video" : "layout--no-video"
       }`}
     >
       <Header
@@ -101,20 +103,22 @@ const YouTubePlaylistPlayer: React.FC = () => {
           <button
             type="button"
             className="video-toggle-btn"
-            onClick={toggleVisualizer}
+            onClick={() => setShowVideo((v) => !v)}
           >
-            {showVisualizer ? "Hide Video" : "Show Video"}
+            {showVideo ? "Hide Video" : "Show Video"}
           </button>
         }
       />
+
       <LayoutMain
         url={url}
+        showVideo={showVideo}
         playerRef={playerRef}
         isPlaying={isPlaying}
         volume={volume}
         onReady={handlePlayerReady}
         onProgress={onProgress}
-        onEnded={onEnded}
+        onEnded={handleEnded}
         onError={onError}
         initAnalyser={initAnalyser}
         playlist={playlist}
@@ -124,9 +128,10 @@ const YouTubePlaylistPlayer: React.FC = () => {
         seekTo={seekTo}
         loading={loading}
       />
+
       <LayoutControls
         isPlaying={isPlaying}
-        onPlayPause={isPlaying ? pause : play}
+        onPlayPause={() => (isPlaying ? pause() : play())}
         onPrev={() => changeTrack(currentIndex - 1, true, play, seekTo)}
         onNext={() => changeTrack(currentIndex + 1, true, play, seekTo)}
         isShuffle={isShuffle}

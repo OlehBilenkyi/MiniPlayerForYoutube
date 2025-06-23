@@ -10,7 +10,7 @@ interface Props {
 }
 
 const VisualizerToggle: React.FC<Props> = ({ show, toggle, isPlaying, analyserNode }) => (
-  <div className={`visualizer-toggle ${show ? "" : "visualizer-toggle--hidden"}`}>
+  <div className="visualizer-container">
     <button
       type="button"
       className="toggle-visualizer-btn"
@@ -20,11 +20,9 @@ const VisualizerToggle: React.FC<Props> = ({ show, toggle, isPlaying, analyserNo
     >
       {show ? "Hide Visualizer" : "Show Visualizer"}
     </button>
-    {show && (
-      <div className="visualizer-toggle__canvas-wrapper">
-        <Visualizer isPlaying={isPlaying} analyserNode={analyserNode} />
-      </div>
-    )}
+    <div className={`visualizer-wrapper ${show ? "" : "hidden"}`}>
+      <Visualizer isPlaying={isPlaying} analyserNode={analyserNode} />
+    </div>
   </div>
 );
 

@@ -1,14 +1,7 @@
-import { useState } from "react";
-import { useAudioAnalyser } from "../AudioAnalyser/useAudioAnalyser";
+import { useState, useCallback } from "react";
 
 export function useVisualizerToggle() {
   const [showVisualizer, setShowVisualizer] = useState(false);
-  const { initAnalyser, audioContext, analyserNode } = useAudioAnalyser();
-  return {
-    showVisualizer,
-    setShowVisualizer,
-    initAnalyser,
-    audioContext,
-    analyserNode,
-  };
+  const toggleVisualizer = useCallback(() => setShowVisualizer(v => !v), []);
+  return { showVisualizer, toggleVisualizer };
 }

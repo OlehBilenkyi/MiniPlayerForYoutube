@@ -5,6 +5,7 @@ import "./LayoutMain.sass";
 
 interface LayoutMainProps {
   url: string;
+  showVideo: boolean; // добавлено
   playerRef: React.RefObject<any>;
   isPlaying: boolean;
   volume: number;
@@ -12,17 +13,23 @@ interface LayoutMainProps {
   onProgress: (state: any) => void;
   onEnded: () => void;
   onError: (error: Error) => void;
-  initAnalyser: (mediaElement: HTMLMediaElement) => void;
-  playlist: any[];
+  initAnalyser: (media: HTMLMediaElement) => void;
+  playlist: Array<{ videoId: string; title: string }>;
   currentIndex: number;
-  changeTrack: (index: number, shouldPlay: boolean, play: () => void, seekTo: (time: number) => void) => void;
+  changeTrack: (
+    idx: number,
+    auto: boolean,
+    playFn: () => void,
+    seekFn: (sec: number) => void
+  ) => void;
   play: () => void;
-  seekTo: (time: number) => void;
+  seekTo: (sec: number) => void;
   loading: boolean;
 }
 
 const LayoutMain: React.FC<LayoutMainProps> = ({
   url,
+  showVideo,
   playerRef,
   isPlaying,
   volume,
@@ -39,22 +46,20 @@ const LayoutMain: React.FC<LayoutMainProps> = ({
   loading,
 }) => (
   <div className="layout-main">
-    {url && (
-      <div className="video-area">
-        <HiddenPlayer
-          ref={playerRef}
-          url={url}
-          playing={isPlaying}
-          volume={volume}
-          onReady={onReady}
-          onProgress={onProgress}
-          onEnded={onEnded}
-          onError={onError}
-          initAnalyser={initAnalyser}
-          showVideo={!!url}
-        />
-      </div>
-    )}
+    <div className="video-area">
+      <HiddenPlayer
+        ref={playerRef}
+        url={url}
+        playing={isPlaying}
+        volume={volume}
+        onReady={onReady}
+        onProgress={onProgress}
+        onEnded={onEnded}
+        onError={onError}
+        initAnalyser={initAnalyser}
+        showVideo={showVideo} // передаём флаг дальше
+      />
+    </div>
     <div className="playlist-area">
       <PlaylistSection
         items={playlist}
