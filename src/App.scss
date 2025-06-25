@@ -1,50 +1,22 @@
-:root {
-  --bg-color: #fafafa;
-  --text-color: #333333;
-  --accent-color: #1e90ff;
-  --control-bg: #ffffff;
-}
-
-.dark {
-  --bg-color: #1e1e1e;
-  --text-color: #eeeeee;
-  --accent-color: #4aa3ff;
-  --control-bg: #2a2a2a;
-}
-
 body {
+  font-family: "Lexend", "Noto Sans", sans-serif;
+  background-color: #181711;
+  color: white;
   margin: 0;
   padding: 0;
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  font-family: Arial, sans-serif;
+  overflow-x: hidden;
 }
-
-h2 {
-  margin: 0;
-  padding: 0;
-}
-
-ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-button {
-  cursor: pointer;
+// Стили для поисковой строки
+.form-input {
+  background-color: #393628;
   border: none;
-  background: none;
-  padding: 0;
-  font-family: inherit;
-}
+  color: white;
+  padding: 12px;
+  border-radius: 0 12px 12px 0;
+  width: 100%;
+  height: 48px;
 
-/* Дополнительно: определим CSS-переменные в формате RGB для более лёгкой прозрачности */
-
-:root {
-  --accent-color-rgb: 30, 144, 255; /* rgb(30,144,255) соответствует #1e90ff */
-}
-
-.dark {
-  --accent-color-rgb: 74, 163, 255; /* rgb(74,163,255) соответствует #4aa3ff */
+  &::placeholder {
+    color: #b9b49d;
+  }
 }

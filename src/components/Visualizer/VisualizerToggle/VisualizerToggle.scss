@@ -1,66 +1,39 @@
-.toggle-visualizer-btn {
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(
-    135deg,
-    rgba(29, 185, 84, 0.2),
-    rgba(29, 185, 84, 0.1)
-  );
-  color: #fff;
-  border: none;
-  border-radius: 30px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin: 1rem 0;
-  /* hover/active остаются ваши */
-}
-
-/* Ваша обёртка для канваса — она же и скрывается */
-.visualizer-wrapper {
-  width: 100%;
-  height: 200px;
-  background: rgba(20, 20, 20, 0.8);
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-  margin: 1rem 0;
-  overflow: hidden;
-  transition: all 0.5s ease;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  &.hidden {
-    height: 0;
-    opacity: 0;
-    margin: 0;
-    box-shadow: none;
-  }
-
-  canvas {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
-}
+/* VisualizerToggle.scss */
 .visualizer-container {
-  width: 100%;
-  margin: 1rem 0;
-  text-align: center;
-}
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 16px;
 
-.toggle-visualizer-btn {
-  /* ваши стили кнопки */
-}
+  .toggle-visualizer-btn {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    align-self: flex-start;
 
-.visualizer-wrapper {
-  width: 100%;
-  height: 200px;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  &.hidden {
-    height: 0;
-    opacity: 0;
-    margin: 0;
+    &:hover {
+      background-color: var(--bg-accent);
+    }
+
+    &[aria-pressed="true"] {
+      background-color: var(--bg-accent);
+    }
+  }
+
+  .visualizer-wrapper {
+    background-color: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    height: 120px;
+
+    &.hidden {
+      height: 0;
+      overflow: hidden;
+    }
   }
 }

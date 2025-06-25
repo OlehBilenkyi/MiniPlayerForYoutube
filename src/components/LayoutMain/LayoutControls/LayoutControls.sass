@@ -1,112 +1,138 @@
 .layout-controls
   display: flex
   flex-direction: column
-  gap: 1rem
-  width: 100%
-  padding: 1rem
-  background-color: var(--control-bg)
+  gap: 16px
+  padding: 16px
+  background-color: #181711
   border-radius: 12px
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)
-  transition: all 0.3s ease
-
-  .controls-with-tooltip
-    display: flex
-    justify-content: center
-    gap: 1rem
-    margin-bottom: 1rem
-
-    button
-      background-color: var(--accent-color)
-      color: white
-      border: none
-      border-radius: 50%
-      width: 48px
-      height: 48px
-      display: flex
-      align-items: center
-      justify-content: center
-      cursor: pointer
-      transition: transform 0.2s, background-color 0.3s
-
-      &:hover
-        transform: scale(1.1)
-        background-color: var(--accent-light)
-
-      &:active
-        transform: scale(0.95)
-
-      svg
-        width: 24px
-        height: 24px
-
-  .visualizer-toggle
-    display: flex
-    justify-content: center
-    margin-bottom: 1rem
-
-    button
-      background-color: var(--accent-color)
-      color: white
-      border: none
-      border-radius: 24px
-      padding: 0.5rem 1rem
-      cursor: pointer
-      transition: background-color 0.3s
-
-      &:hover
-        background-color: var(--accent-light)
-
+  font-family: Lexend, "Noto Sans", sans-serif
+  
   .progress-volume-section
     display: flex
     flex-direction: column
-    gap: 1rem
-
-    .progress-with-time
-      width: 100%
-
-      input[type="range"]
-        width: 100%
-        height: 8px
-        -webkit-appearance: none
-        background: var(--bg-light)
-        border-radius: 4px
-        outline: none
-
-        &::-webkit-slider-thumb
-          -webkit-appearance: none
-          width: 16px
-          height: 16px
-          border-radius: 50%
-          background: var(--accent-color)
-          cursor: pointer
-
-      .time-display
-        display: flex
-        justify-content: space-between
-        color: var(--text-secondary)
-        font-size: 0.8rem
-
-    .volume-with-label
-      display: flex
-      align-items: center
-      gap: 0.5rem
-
-      label
-        color: var(--text-primary)
-        font-size: 0.9rem
-
-      input[type="range"]
-        width: 100%
-        height: 8px
-        -webkit-appearance: none
-        background: var(--bg-light)
-        border-radius: 4px
-        outline: none
-
-        &::-webkit-slider-thumb
-          -webkit-appearance: none
-          width: 16px
-          height: 16px
-          border-radius: 50%
-          background: var(--accent-color)
-          cursor: pointer
+    gap: 12px
+    background-color: #393628
+    padding: 16px
+    border-radius: 12px
+  
+  .controls-container
+    display: flex
+    justify-content: center
+    gap: 12px
+    padding: 8px
+  
+  .control-button
+    display: flex
+    align-items: center
+    justify-content: center
+    width: 40px
+    height: 40px
+    background-color: #393628
+    border-radius: 50%
+    color: white
+    border: none
+    cursor: pointer
+    transition: background-color 0.2s
+    
+    &:hover
+      background-color: #544f3b
+    
+    &:active
+      transform: scale(0.95)
+    
+    svg
+      width: 24px
+      height: 24px
+  
+  .progress-bar-container
+    display: flex
+    align-items: center
+    gap: 8px
+    width: 100%
+    
+    .time-display
+      color: #b9b49d
+      font-size: 12px
+      min-width: 40px
+      text-align: center
+    
+    .progress-track
+      flex: 1
+      height: 4px
+      background-color: #544f3b
+      border-radius: 2px
+      position: relative
+      cursor: pointer
+      
+      .progress-fill
+        height: 100%
+        background-color: white
+        border-radius: 2px
+        width: 50%
+      
+      .progress-thumb
+        position: absolute
+        top: 50%
+        transform: translateY(-50%)
+        width: 12px
+        height: 12px
+        background-color: white
+        border-radius: 50%
+        left: 50%
+  
+  .volume-control
+    display: flex
+    align-items: center
+    gap: 8px
+    width: 100%
+    
+    .volume-label
+      color: #b9b49d
+      font-size: 14px
+      min-width: 40px
+    
+    .volume-track
+      flex: 1
+      height: 4px
+      background-color: #544f3b
+      border-radius: 2px
+      position: relative
+      cursor: pointer
+      
+      .volume-fill
+        height: 100%
+        background-color: white
+        border-radius: 2px
+        width: 50%
+      
+      .volume-thumb
+        position: absolute
+        top: 50%
+        transform: translateY(-50%)
+        width: 12px
+        height: 12px
+        background-color: white
+        border-radius: 50%
+        left: 50%
+  
+  .button-group
+    display: flex
+    gap: 8px
+    justify-content: center
+    width: 100%
+    
+    button
+      flex: 1
+      max-width: 200px
+      padding: 10px 16px
+      background-color: #393628
+      color: white
+      border: none
+      border-radius: 20px
+      font-weight: 700
+      font-size: 14px
+      cursor: pointer
+      transition: background-color 0.2s
+      
+      &:hover
+        background-color: #544f3b

@@ -1,63 +1,20 @@
-.player-controls {
-  display: flex;
-  gap: 1.5rem;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  margin: 1rem;
-}
-
+// Стили для кнопок
 .control-btn {
-  --size: 3.5rem;
-  --bg: #2c2c2c;
-  --fg: #ffffff;
-  --accent: #1db954;
-  --accent-light: #1ed760;
-  --accent-dark: #1aa34a;
-  --shadow: rgba(0, 0, 0, 0.3);
-
-  width: var(--size);
-  height: var(--size);
+  background-color: #393628;
   border: none;
+  color: white;
+  padding: 12px;
   border-radius: 50%;
-  background: var(--bg);
-  box-shadow: 0 4px 12px var(--shadow);
-  cursor: pointer;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
-  color: var(--fg);
-
-  &:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 16px var(--shadow);
-    background: var(--bg);
-  }
-
-  &:active {
-    transform: scale(0.95);
-    box-shadow: 0 2px 8px var(--shadow);
-  }
-
-  &.play-pause {
-    background: var(--accent);
-
-    &:hover {
-      background: var(--accent-light);
-    }
-
-    &:active {
-      background: var(--accent-dark);
-    }
-  }
+  cursor: pointer;
 
   svg {
-    width: 1.75rem;
-    height: 1.75rem;
-    fill: var(--fg);
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
   }
 }
