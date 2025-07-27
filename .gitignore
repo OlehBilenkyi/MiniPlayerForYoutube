@@ -23,6 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-# Env files (API keys, secrets)
+.vercel
+
 .env
-*.env
